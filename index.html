@@ -1532,6 +1532,34 @@ const CamScan = (function () {
   .cek-more{margin:8px 4px 0;font-size:12.5px;color:var(--muted);text-align:center;}
   .cek-more[hidden]{display:none;}
 
+  /* ---- Cakupan (filter) & progres keseluruhan ---- */
+  .cek-scope{display:flex;align-items:center;gap:6px;margin-bottom:12px;padding:8px 8px 8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+  .cek-scope.on{border:1.5px solid var(--accent);background:var(--accent-bg);}
+  .cs-text{flex:1;min-width:0;}
+  .cs-lbl{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);}
+  .cs-val{display:block;font-size:14px;font-weight:800;overflow-wrap:anywhere;line-height:1.3;}
+  .cek-scope:not(.on) .cs-val{color:var(--muted);font-weight:700;}
+  .cs-btn{flex:none;min-height:44px;padding:0 14px;display:inline-flex;align-items:center;gap:6px;border-radius:12px;border:1.5px solid var(--accent);background:var(--accent);color:#fff;font-size:13px;font-weight:800;letter-spacing:.04em;}
+  .cs-btn .mi{width:18px;height:18px;}
+  .cs-clear{flex:none;width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;border-radius:12px;color:var(--muted);}
+  .cs-clear[hidden]{display:none;}
+  .cs-clear .mi{width:22px;height:22px;}
+  .cek-overall{margin-top:8px;font-size:12.5px;color:var(--muted);}
+  .cek-overall[hidden]{display:none;}
+  .cek-overall b{color:var(--text);}
+  .cr-note{margin-top:10px;padding:9px 11px;border-radius:10px;background:var(--warn-bg);color:var(--warn-fg);font-size:13px;font-weight:700;line-height:1.4;overflow-wrap:anywhere;}
+  .cek-result.warn .cr-note{background:rgba(245,158,11,.16);}
+  .cr-hist{margin-top:8px;font-size:12.5px;color:var(--muted);line-height:1.5;}
+  .cr-hist b{color:var(--text);font-weight:700;}
+  .fl-group{margin:0 0 16px;}
+  .fl-head{display:flex;justify-content:space-between;gap:8px;margin:0 0 8px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+  .fl-head span{color:var(--accent-text);}
+  .fl-chips{display:flex;flex-wrap:wrap;gap:6px;}
+  .fl-chip{min-height:42px;padding:0 14px;border-radius:99px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:13.5px;font-weight:700;}
+  .fl-chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .fl-empty{font-size:12.5px;color:var(--muted);}
+  #cekFilterOverlay{z-index:120;}
+
   /* ---- Layar ubah kondisi (opname) ---- */
   .kd-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .kd-opt{min-height:46px;padding:8px 10px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;font-weight:700;text-align:center;}
@@ -1552,6 +1580,13 @@ const CamScan = (function () {
     </div>
     <div class="cek-count"><span class="cek-pct" id="cekPct">0%</span><b id="cekDone">0</b> dari <b id="cekTotal">0</b> sudah dicek</div>
     <div class="cek-bar" id="cekBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progres cek stok"><i></i></div>
+    <div class="cek-overall" id="cekOverall" hidden></div>
+  </div>
+
+  <div class="cek-scope" id="cekScope">
+    <div class="cs-text"><span class="cs-lbl">CAKUPAN</span><span class="cs-val" id="cekScopeTxt">Semua aset</span></div>
+    <button type="button" id="cekFilterClear" class="cs-clear" aria-label="Hapus filter cakupan" hidden></button>
+    <button type="button" id="cekFilterBtn" class="cs-btn"></button>
   </div>
 
   <form class="cek-scan" id="cekForm" autocomplete="off">
@@ -1571,6 +1606,18 @@ const CamScan = (function () {
   <ul class="cek-list" id="cekList"></ul>
   <p class="cek-more" id="cekMore" hidden></p>
 </section>
+
+<div id="cekFilterOverlay" class="overlay edit-overlay" hidden>
+  <div class="edit-sheet" role="dialog" aria-modal="true" aria-labelledby="cekFilterTitle">
+    <h2 id="cekFilterTitle">Cakupan opname</h2>
+    <p class="edit-sub">Pilih aset yang akan diperiksa. Progres dan daftar hanya menghitung cakupan ini. Aset di luar cakupan yang ter-scan tetap dicatat.</p>
+    <div class="edit-body" id="cekFilterBody"></div>
+    <div class="modal-actions">
+      <button type="button" id="cekFilterReset" class="btn-secondary">Hapus semua</button>
+      <button type="button" id="cekFilterApply" class="btn-primary">Terapkan</button>
+    </div>
+  </div>
+</div>
 
 <div id="cekEditOverlay" class="overlay edit-overlay" hidden>
   <form class="edit-sheet" id="cekEditForm" role="dialog" aria-modal="true" aria-labelledby="cekEditTitle" autocomplete="off" novalidate>
@@ -1615,13 +1662,47 @@ const CamScan = (function () {
 const Cek = (function () {
   const $ = id => document.getElementById(id);
   const MODE_KEY = 'mac_mode_v1';
-  let st = { sheet: '', total: 0, dicek: 0, belumTotal: 0, belum: [], recent: [], tab: 'belum' };
+  const FILTER_KEY = 'mac_cek_filter_v1';
+  const FIELDS = [['kategori', 'Kategori'], ['lantai', 'Lantai'], ['divisi', 'Divisi'], ['kondisi', 'Kondisi']];
+  const emptyFilter = () => ({ kategori: [], lantai: [], divisi: [], kondisi: [] });
+  const emptyOptions = () => ({ kategori: [], lantai: [], divisi: [], kondisi: [] });
+  let flt = emptyFilter();      // cakupan aktif untuk sheet yang sedang dipilih
+  let fdraft = emptyFilter();   // pilihan di layar filter sebelum diterapkan
+  let st = { sheet: '', total: 0, dicek: 0, belumTotal: 0, belum: [], recent: [], tab: 'belum', overall: { total: 0, dicek: 0 }, options: emptyOptions() };
   let loaded = false, loadSeq = 0, busy = false, mode = 'input', confirmCb = null;
   let resultCtx = null;   // kartu hasil scan yang sedang tampil (untuk dimuat ulang setelah diubah)
   let editRec = null, editKondisi = '', editBusy = false;
 
   function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
   function toast(m) { try { showToast(m); } catch (e) {} }
+
+  /* ---------- Cakupan: simpan per sheet di perangkat ---------- */
+  function normFilter(f) {
+    const out = emptyFilter();
+    FIELDS.forEach(function (fd) {
+      const k = fd[0], src = f && Array.isArray(f[k]) ? f[k] : [], seen = {};
+      src.forEach(function (v) {
+        v = String(v === null || v === undefined ? '' : v).trim();
+        const low = v.toLowerCase();
+        if (v && !seen[low]) { seen[low] = true; out[k].push(v); }
+      });
+    });
+    return out;
+  }
+  function filterActive(f) { return FIELDS.some(fd => f[fd[0]].length > 0); }
+  function loadFilter(sk) {
+    try { const all = JSON.parse(localStorage.getItem(FILTER_KEY) || '{}'); return normFilter(all && all[sk]); } catch (e) { return emptyFilter(); }
+  }
+  function saveFilter(sk, f) {
+    try {
+      const all = JSON.parse(localStorage.getItem(FILTER_KEY) || '{}') || {};
+      if (filterActive(f)) all[sk] = f; else delete all[sk];
+      localStorage.setItem(FILTER_KEY, JSON.stringify(all));
+    } catch (e) { /* abaikan */ }
+  }
+  function describeFilter(f) {
+    return FIELDS.filter(fd => f[fd[0]].length).map(fd => fd[1] + ': ' + f[fd[0]].join(', ')).join(' · ');
+  }
 
   // Auth.call dibungkus Promise
   function call(name, args) {
@@ -1663,13 +1744,18 @@ const Cek = (function () {
   function load() {
     if (!Auth.user) return;
     const seq = ++loadSeq, sk = Sheets.get();
+    flt = loadFilter(sk);
+    render();
     $('cekRefresh').classList.add('spin');
     $('cekList').innerHTML = '<li class="cek-empty">Memuat…</li>';
-    call('getStokData', [sk]).then(function (d) {
+    call('getStokData', [sk, flt]).then(function (d) {
       if (seq !== loadSeq) return;
       $('cekRefresh').classList.remove('spin');
       if (!d || d.authRequired) return;
-      st = { sheet: d.sheet, total: d.total, dicek: d.dicek, belumTotal: d.belumTotal, belum: d.belum || [], recent: d.recent || [], tab: st.tab };
+      st = {
+        sheet: d.sheet, total: d.total, dicek: d.dicek, belumTotal: d.belumTotal, belum: d.belum || [], recent: d.recent || [], tab: st.tab,
+        overall: d.overall || { total: d.total, dicek: d.dicek }, options: d.options || emptyOptions()
+      };
       loaded = true;
       render();
     }).catch(function (e) {
@@ -1690,6 +1776,16 @@ const Cek = (function () {
     bar.firstElementChild.style.width = pct + '%';
     bar.setAttribute('aria-valuenow', String(pct));
     bar.classList.toggle('full', st.total > 0 && st.dicek >= st.total);
+    const on = filterActive(flt);
+    $('cekScope').classList.toggle('on', on);
+    $('cekScopeTxt').textContent = on ? describeFilter(flt) : 'Semua aset';
+    $('cekFilterClear').hidden = !on;
+    const ov = $('cekOverall');
+    ov.hidden = !on;
+    if (on) {
+      const opct = st.overall.total ? Math.floor(st.overall.dicek * 100 / st.overall.total) : 0;
+      ov.innerHTML = 'Keseluruhan: <b>' + st.overall.dicek + '</b> dari <b>' + st.overall.total + '</b> sudah dicek (' + opct + '%)';
+    }
     $('cekBelumN').textContent = '(' + st.belumTotal + ')';
     $('cekSudahN').textContent = '(' + st.dicek + ')';
     document.querySelectorAll('.cek-tabs button').forEach(function (b) { b.setAttribute('aria-selected', b.getAttribute('data-list') === st.tab ? 'true' : 'false'); });
@@ -1726,7 +1822,7 @@ const Cek = (function () {
           (l.ids ? '<span class="mono">' + esc(l.ids) + '</span>' : '') +
           (l.loc ? '<span>' + esc(l.loc) + '</span>' : '') +
           (r.kondisi ? '<span>' + badge(r.kondisi) + '</span>' : '') +
-          (sudah ? '<span class="when">✓ ' + esc(r.cekWaktu) + (r.cekOleh ? ' · ' + esc(r.cekOleh) : '') + '</span>' : '') +
+          (sudah ? '<span class="when">✓ ' + esc(r.cekWaktu) + (r.cekOleh ? ' · ' + esc(r.cekOleh) : '') + ((r.riwayat && r.riwayat.length > 1) ? ' · ' + r.riwayat.length + '×' : '') + '</span>' : '') +
           '</div><button type="button" class="ci-act edit" data-act="edit" aria-label="Ubah kondisi atau catatan">' + MI.svg('edit') + '</button>' +
           '<button type="button" class="ci-act ' + (sudah ? 'undo' : '') + '" data-act="' + (sudah ? 'unmark' : 'mark') + '" aria-label="' + (sudah ? 'Batalkan centang' : 'Centang manual') + '">' +
           MI.svg(sudah ? 'undo' : 'check_outline') + '</button></li>';
@@ -1742,22 +1838,34 @@ const Cek = (function () {
   }
 
   /* ---------- Perubahan lokal setelah centang / batal ---------- */
-  function applyChecked(rec) {
-    const i = st.belum.findIndex(x => x.id === rec.id);
-    if (i >= 0) st.belum.splice(i, 1);
-    const wasChecked = st.recent.some(x => x.id === rec.id);
-    st.recent = st.recent.filter(x => x.id !== rec.id);
-    st.recent.unshift(rec);
-    if (st.recent.length > 15) st.recent.length = 15;
-    if (!wasChecked) { st.dicek = Math.min(st.total, st.dicek + 1); st.belumTotal = Math.max(0, st.belumTotal - 1); }
+  // firstCheck = pemeriksaan pertama aset ini (menambah progres); inScope = termasuk cakupan yang sedang aktif
+  function applyChecked(rec, firstCheck, inScope) {
+    if (firstCheck) st.overall.dicek = Math.min(st.overall.total, st.overall.dicek + 1);
+    if (inScope) {
+      const i = st.belum.findIndex(x => x.id === rec.id);
+      if (i >= 0) st.belum.splice(i, 1);
+      st.recent = st.recent.filter(x => x.id !== rec.id);
+      st.recent.unshift(rec);
+      if (st.recent.length > 15) st.recent.length = 15;
+      if (firstCheck) { st.dicek = Math.min(st.total, st.dicek + 1); st.belumTotal = Math.max(0, st.belumTotal - 1); }
+    }
     render();
   }
 
-  function applyUnchecked(rec) {
-    st.recent = st.recent.filter(x => x.id !== rec.id);
-    if (!st.belum.some(x => x.id === rec.id)) st.belum.unshift(rec);
-    st.dicek = Math.max(0, st.dicek - 1);
-    st.belumTotal = Math.min(st.total, st.belumTotal + 1);
+  // nowUnchecked = aset kembali belum pernah dicek; bila tidak, hanya pemeriksaan terakhirnya yang dibatalkan
+  function applyUnchecked(rec, inScope, nowUnchecked) {
+    if (nowUnchecked) st.overall.dicek = Math.max(0, st.overall.dicek - 1);
+    if (inScope) {
+      if (nowUnchecked) {
+        st.recent = st.recent.filter(x => x.id !== rec.id);
+        if (!st.belum.some(x => x.id === rec.id)) st.belum.unshift(rec);
+        st.dicek = Math.max(0, st.dicek - 1);
+        st.belumTotal = Math.min(st.total, st.belumTotal + 1);
+      } else {
+        const k = st.recent.findIndex(x => x.id === rec.id);
+        if (k >= 0) st.recent[k] = rec;
+      }
+    }
     render();
   }
 
@@ -1780,6 +1888,20 @@ const Cek = (function () {
   }
 
   const btnEdit = (rec) => '<button type="button" class="cr-btn wide' + (tone(rec.kondisi) === 'good' || !rec.kondisi ? '' : ' primary') + '" data-ract="edit" data-id="' + esc(rec.id) + '">' + MI.svg('edit') + ' UBAH KONDISI / CATATAN</button>';
+  // Riwayat pemeriksaan sebelumnya (bila ada lebih dari satu)
+  function histHtml(r) {
+    if (!r.riwayat || r.riwayat.length < 2) return '';
+    return '<div class="cr-hist">Pemeriksaan sebelumnya:' + r.riwayat.slice(1).map(function (x) {
+      return '<br>• <b>' + esc(x.waktu) + '</b>' + (x.oleh ? ' · ' + esc(x.oleh) : '');
+    }).join('') + '</div>';
+  }
+  // Kartu hasil untuk aset yang sudah ketemu: dipakai ulang saat data diubah (resultCtx menyimpan bahannya)
+  function showScanCard(kind, icon, title, rec, extra) {
+    showResult(kind, icon, title, recHtml(rec) + histHtml(rec) + (extra || ''), btnEdit(rec) + btnUndo(rec.id));
+    resultCtx = { kind: kind, icon: icon, title: title, rec: rec, extra: extra || '' };
+  }
+  const outNote = () => '<div class="cr-note">Aset ini tidak termasuk cakupan (' + esc(describeFilter(flt)) + '). Pemeriksaan tetap tercatat, tetapi tidak menambah progres cakupan.</div>';
+
   const btnUndo = (id) => '<button type="button" class="cr-btn" data-ract="unmark" data-id="' + esc(id) + '">' + MI.svg('undo') + ' BATALKAN CENTANG</button>';
 
   // Satu kode -> server -> tampilkan + bunyi. Mengembalikan Promise<{kind, title, sub}> untuk banner kamera.
@@ -1789,7 +1911,7 @@ const Cek = (function () {
     if (busy) return Promise.resolve(null);
     busy = true;
     $('cekGo').disabled = true;
-    return call('stokScan', [code, Sheets.get()]).then(function (r) {
+    return call('stokScan', [code, Sheets.get(), flt]).then(function (r) {
       busy = false; $('cekGo').disabled = false;
       if (!r || r.authRequired) return null;
       return onScanResult(r, code);
@@ -1803,18 +1925,25 @@ const Cek = (function () {
 
   function onScanResult(r, code) {
     const rec = r.record;
-    if (r.status === 'ok') {
+    if (r.status === 'ok' || r.status === 'already') {
+      const inScope = r.inScope !== false, first = r.firstCheck !== false && r.status === 'ok';
+      const ids = recLines(rec).ids;
+      if (r.status === 'already') {
+        Feedback.warn();
+        showScanCard('warn', 'warning', 'SUDAH DICEK HARI INI', rec,
+          '<div class="cr-line">Dicek ' + esc(rec.cekWaktu) + (rec.cekOleh ? ' oleh ' + esc(rec.cekOleh) : '') + '. Tidak dicatat dua kali.</div>' + (inScope ? '' : outNote()));
+        return { kind: 'warn', title: 'Sudah dicek hari ini: ' + (rec.namaAset || code), sub: rec.cekWaktu + (rec.cekOleh ? ' · ' + rec.cekOleh : '') };
+      }
+      if (!inScope) {
+        Feedback.warn();
+        showScanCard('warn', 'warning', 'DICATAT — DI LUAR CAKUPAN', rec, outNote());
+        applyChecked(rec, first, false);
+        return { kind: 'warn', title: 'Di luar cakupan: ' + (rec.namaAset || code), sub: ids };
+      }
       Feedback.ok();
-      showResult('ok', 'check_circle', 'DITEMUKAN — DICENTANG', recHtml(rec), btnEdit(rec) + btnUndo(rec.id)); resultCtx = { kind: 'ok', icon: 'check_circle', title: 'DITEMUKAN — DICENTANG', rec: rec };
-      applyChecked(rec);
-      return { kind: 'ok', title: '✓ ' + (rec.namaAset || code), sub: recLines(rec).ids };
-    }
-    if (r.status === 'already') {
-      Feedback.warn();
-      showResult('warn', 'warning', 'SUDAH DICEK SEBELUMNYA',
-        recHtml(rec) + '<div class="cr-line">Dicek ' + esc(rec.cekWaktu) + (rec.cekOleh ? ' oleh ' + esc(rec.cekOleh) : '') + '</div>', btnEdit(rec) + btnUndo(rec.id));
-      resultCtx = { kind: 'warn', icon: 'warning', title: 'SUDAH DICEK SEBELUMNYA', rec: rec };
-      return { kind: 'warn', title: 'Sudah dicek: ' + (rec.namaAset || code), sub: rec.cekWaktu + (rec.cekOleh ? ' · ' + rec.cekOleh : '') };
+      showScanCard('ok', 'check_circle', first ? 'DITEMUKAN — DICENTANG' : 'DICEK ULANG — TERCATAT', rec, '');
+      applyChecked(rec, first, true);
+      return { kind: 'ok', title: (first ? '✓ ' : '↻ ') + (rec.namaAset || code), sub: ids };
     }
     if (r.status === 'notfound') {
       Feedback.err();
@@ -1826,8 +1955,8 @@ const Cek = (function () {
     if (r.status === 'multiple') {
       Feedback.warn();
       const opts = (r.records || []).map(function (x) {
-        return '<div class="cr-opt"><div><b>' + esc(x.namaAset || x.kategori || '(tanpa nama)') + '</b><div class="cr-line mono">' + esc(recLines(x).ids) + '</div><div class="cr-line">' + esc(recLines(x).loc) + (x.dicek ? ' · sudah dicek' : '') + '</div></div>' +
-          (x.dicek ? '' : '<button type="button" class="cr-btn primary" style="flex:none;min-width:96px" data-ract="mark" data-id="' + esc(x.id) + '">CENTANG</button>') + '</div>';
+        return '<div class="cr-opt"><div><b>' + esc(x.namaAset || x.kategori || '(tanpa nama)') + '</b><div class="cr-line mono">' + esc(recLines(x).ids) + '</div><div class="cr-line">' + esc(recLines(x).loc) + (x.dicek ? ' · sudah dicek ' + esc(x.cekWaktu) : '') + '</div></div>' +
+          '<button type="button" class="cr-btn' + (x.dicek ? '' : ' primary') + '" style="flex:none;min-width:96px" data-ract="mark" data-id="' + esc(x.id) + '">' + (x.dicek ? 'CEK ULANG' : 'CENTANG') + '</button>' + '</div>';
       }).join('');
       showResult('warn', 'warning', 'KODE COCOK DENGAN ' + r.count + ' DATA', '<div class="cr-line">Pilih yang benar. Tidak ada yang dicentang otomatis.</div><div class="cr-multi">' + opts + '</div>');
       return { kind: 'warn', title: 'Cocok dengan ' + r.count + ' data', sub: 'Buka layar untuk memilih' };
@@ -1850,19 +1979,25 @@ const Cek = (function () {
   }
 
   function doMark(id) {
-    call('stokMark', [id, Sheets.get()]).then(function (r) {
+    call('stokMark', [id, Sheets.get(), flt]).then(function (r) {
       if (!r || r.authRequired) return;
-      if (r.status === 'ok') { Feedback.ok(); applyChecked(r.record); toast('Dicentang: ' + (r.record.namaAset || 'aset')); }
-      else if (r.status === 'already') { Feedback.warn(); applyChecked(r.record); toast('Sudah dicek sebelumnya.'); }
+      const inScope = r.inScope !== false, first = r.firstCheck !== false;
+      if (r.status === 'ok') {
+        if (inScope) { Feedback.ok(); toast((first ? 'Dicentang: ' : 'Dicek ulang: ') + (r.record.namaAset || 'aset')); }
+        else { Feedback.warn(); toast('Dicatat, tetapi di luar cakupan: ' + (r.record.namaAset || 'aset')); }
+        applyChecked(r.record, first, inScope);
+      }
+      else if (r.status === 'already') { Feedback.warn(); toast('Sudah dicek hari ini.'); }
       else { Feedback.err(); toast(r.message || 'Gagal mencentang.'); }
     }).catch(function (e) { Feedback.err(); toast(e.message); });
   }
 
   function doUnmark(id) {
-    call('stokUnmark', [id, Sheets.get()]).then(function (r) {
+    call('stokUnmark', [id, Sheets.get(), flt]).then(function (r) {
       if (!r || r.authRequired) return;
       if (r.status === 'ok') {
-        applyUnchecked(r.record); toast('Centang dibatalkan.');
+        applyUnchecked(r.record, r.inScope !== false, !r.record.dicek);
+        toast(r.record.dicek ? 'Pemeriksaan terakhir dibatalkan.' : 'Centang dibatalkan.');
         const box = $('cekResult'); if (!box.hidden) box.hidden = true;
       } else { Feedback.err(); toast(r.message || 'Gagal membatalkan.'); }
     }).catch(function (e) { Feedback.err(); toast(e.message); });
@@ -1908,8 +2043,7 @@ const Cek = (function () {
     swap(st.belum); swap(st.recent);
     if (resultCtx && resultCtx.rec.id === oldId) {
       const c = resultCtx;
-      showResult(c.kind, c.icon, c.title, recHtml(rec), btnEdit(rec) + btnUndo(rec.id));
-      resultCtx = { kind: c.kind, icon: c.icon, title: c.title, rec: rec };
+      showScanCard(c.kind, c.icon, c.title, rec, c.extra);
     }
     renderList();
   }
@@ -1944,7 +2078,10 @@ const Cek = (function () {
       askConfirm('Centang manual?', (r && r.namaAset ? r.namaAset + ' ' : '') + 'akan ditandai sudah dicek (tanpa scan).', 'Ya, centang', false, function () { doMark(id); });
     } else if (act === 'unmark') {
       const r = findRec(id);
-      askConfirm('Batalkan centang?', (r && r.namaAset ? r.namaAset + ' ' : '') + 'akan dikembalikan ke daftar belum dicek.', 'Ya, batalkan', true, function () { doUnmark(id); });
+      const multi = r && r.riwayat && r.riwayat.length > 1;
+      askConfirm(multi ? 'Batalkan pemeriksaan terakhir?' : 'Batalkan centang?',
+        (r && r.namaAset ? r.namaAset + ': ' : '') + (multi ? 'pemeriksaan terakhir (' + r.cekWaktu + ') dihapus dari riwayat. Pemeriksaan sebelumnya tetap tersimpan.' : 'akan dikembalikan ke daftar belum dicek.'),
+        'Ya, batalkan', true, function () { doUnmark(id); });
     } else if (act === 'edit') {
       openEdit(id);
     } else if (act === 'newasset') {
@@ -1959,6 +2096,41 @@ const Cek = (function () {
     }
   }
 
+  /* ---------- Layar cakupan (filter) ---------- */
+  function orderOptions(k, list) {
+    if (k === 'lantai' && typeof OPT_LANTAI !== 'undefined') {
+      const idx = v => { const i = OPT_LANTAI.indexOf(v); return i < 0 ? 999 : i; };
+      return list.slice().sort((a, b) => (idx(a) - idx(b)) || 0);
+    }
+    return list;
+  }
+  function inDraft(k, v) { return fdraft[k].some(x => x.toLowerCase() === String(v).toLowerCase()); }
+  function paintFilter() {
+    $('cekFilterBody').innerHTML = FIELDS.map(function (fd) {
+      const k = fd[0];
+      let opts = (st.options[k] || []).slice();
+      fdraft[k].forEach(function (v) { if (!opts.some(o => o.toLowerCase() === v.toLowerCase())) opts.push(v); });
+      opts = orderOptions(k, opts);
+      const chips = opts.length ? opts.map(function (v) {
+        return '<button type="button" class="fl-chip" data-k="' + k + '" data-v="' + esc(v) + '" aria-pressed="' + (inDraft(k, v) ? 'true' : 'false') + '">' + esc(v) + '</button>';
+      }).join('') : '<span class="fl-empty">' + (loaded ? 'Tidak ada pilihan.' : 'Memuat pilihan…') + '</span>';
+      return '<div class="fl-group"><div class="fl-head">' + esc(fd[1]) + '<span>' + (fdraft[k].length ? fdraft[k].length + ' dipilih' : '') + '</span></div><div class="fl-chips">' + chips + '</div></div>';
+    }).join('');
+  }
+  function openFilter() {
+    fdraft = normFilter(flt);
+    paintFilter();
+    $('cekFilterOverlay').hidden = false;
+  }
+  function closeFilter() { $('cekFilterOverlay').hidden = true; focusInput(); }
+  function applyFilter(f) {
+    flt = normFilter(f);
+    saveFilter(Sheets.get(), flt);
+    $('cekResult').hidden = true; resultCtx = null;
+    loaded = false;
+    load();
+  }
+
   /* ---------- Pasang ---------- */
   function bind() {
     $('tabInput').addEventListener('click', function () { setMode('input'); });
@@ -1967,6 +2139,20 @@ const Cek = (function () {
     $('cekRefresh').innerHTML = MI.svg('refresh');
     $('cekCam').innerHTML = MI.svg('qr') + ' SCAN DENGAN KAMERA';
     $('cekRefresh').addEventListener('click', load);
+    $('cekFilterBtn').innerHTML = '<svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg> FILTER';
+    $('cekFilterClear').innerHTML = MI.svg('close');
+    $('cekFilterBtn').addEventListener('click', openFilter);
+    $('cekFilterClear').addEventListener('click', function () { applyFilter(emptyFilter()); });
+    $('cekFilterBody').addEventListener('click', function (e) {
+      const b = e.target.closest ? e.target.closest('.fl-chip') : null;
+      if (!b) return;
+      const k = b.getAttribute('data-k'), v = b.getAttribute('data-v');
+      if (inDraft(k, v)) fdraft[k] = fdraft[k].filter(x => x.toLowerCase() !== v.toLowerCase()); else fdraft[k].push(v);
+      paintFilter();
+    });
+    $('cekFilterReset').addEventListener('click', function () { fdraft = emptyFilter(); paintFilter(); });
+    $('cekFilterApply').addEventListener('click', function () { const f = fdraft; $('cekFilterOverlay').hidden = true; applyFilter(f); });
+    $('cekFilterOverlay').addEventListener('click', function (e) { if (e.target === $('cekFilterOverlay')) closeFilter(); });
 
     $('cekForm').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -2033,7 +2219,8 @@ const Cek = (function () {
     onLogin: function () { loaded = false; if (mode === 'cek') onEnter(); },
     onLogout: function () {
       loaded = false; loadSeq++; busy = false;
-      st = { sheet: '', total: 0, dicek: 0, belumTotal: 0, belum: [], recent: [], tab: st.tab };
+      st = { sheet: '', total: 0, dicek: 0, belumTotal: 0, belum: [], recent: [], tab: st.tab, overall: { total: 0, dicek: 0 }, options: emptyOptions() };
+      $('cekFilterOverlay').hidden = true;
       $('cekResult').hidden = true; $('cekConfirm').hidden = true; $('cekEditOverlay').hidden = true; editRec = null; resultCtx = null; $('cekInput').value = '';
       try { CamScan.close(); } catch (e) {}
       render();
