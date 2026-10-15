@@ -2047,6 +2047,36 @@ const Auth = (function () {
   .lbl-sum{margin:2px 0 4px;padding:10px 12px;border-radius:12px;background:var(--accent-bg);color:var(--accent-text);font-size:13.5px;font-weight:700;line-height:1.4;}
   .lbl-sum.warn{background:var(--warn-bg);color:var(--warn-fg);}
   .lbl-sum.err{background:var(--bad-bg);color:var(--bad-fg);}
+  .lbl-seg{display:flex;gap:6px;margin:0 0 10px;}
+  .lbl-seg button{flex:1;min-height:44px;padding:6px 8px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);color:var(--muted);font-size:13px;font-weight:800;line-height:1.2;}
+  .lbl-seg button[aria-pressed="true"]{background:var(--accent-bg);border-color:var(--accent);color:var(--accent-text);}
+  .lbl-pickbox{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:10px 12px;border-radius:12px;border:1.5px dashed var(--accent);}
+  .lbl-pickbox[hidden]{display:none;}
+  .lbl-pickbox span{flex:1;min-width:0;font-size:14px;font-weight:800;}
+  .lbl-pickbox button{flex:none;min-height:44px;padding:0 14px;border-radius:12px;border:0;background:var(--accent);color:#fff;font-size:13.5px;font-weight:800;}
+  #lblOverlay .sheet{overflow:auto;}
+
+  /* ---- Layar pilih aset ---- */
+  #lblPickOverlay{z-index:120;}
+  #lblPickOverlay .sheet{max-height:92dvh;height:92dvh;}
+  .pk-search{width:100%;min-height:46px;padding:0 14px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:16px;margin:0 0 8px;}
+  .pk-tools{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;}
+  .pk-tools button{min-height:40px;padding:0 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--bg);color:var(--text);font-size:12.5px;font-weight:800;}
+  .pk-count{margin:0 0 6px;font-size:13px;font-weight:800;color:var(--accent-text);}
+  .pk-list{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;border-top:1px solid var(--border);}
+  .pk-item{display:flex;align-items:flex-start;gap:12px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer;}
+  .pk-item input{flex:none;width:24px;height:24px;margin:2px 0 0;accent-color:var(--accent-text);}
+  .pk-item.off{opacity:.5;cursor:default;}
+  .pk-main{flex:1;min-width:0;}
+  .pk-main b{display:block;font-size:14.5px;overflow-wrap:anywhere;}
+  .pk-main span{display:block;font-size:12.5px;color:var(--muted);overflow-wrap:anywhere;}
+  .pk-main .pk-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--text);}
+  .pk-empty{padding:22px 10px;text-align:center;font-size:13.5px;color:var(--muted);}
+  .pk-paste{margin:0 0 8px;}
+  .pk-paste[hidden]{display:none;}
+  .pk-paste textarea{width:100%;min-height:84px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical;}
+  .pk-paste .pk-msg{margin:6px 0 0;font-size:12.5px;color:var(--muted);overflow-wrap:anywhere;}
+  .pk-paste .pk-go{margin-top:6px;min-height:42px;padding:0 16px;border-radius:10px;border:0;background:var(--accent);color:#fff;font-size:13px;font-weight:800;}
 </style>
 
 <!-- Cetak label barcode -->
@@ -2054,6 +2084,14 @@ const Auth = (function () {
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="lblTitle">
     <h2 id="lblTitle">Cetak Label Barcode</h2>
     <p id="lblInfo"></p>
+    <div class="lbl-seg" role="group" aria-label="Aset yang dicetak">
+      <button type="button" id="lblModeAll" aria-pressed="true">SESUAI TAMPILAN TABEL</button>
+      <button type="button" id="lblModePick" aria-pressed="false">PILIH SENDIRI</button>
+    </div>
+    <div class="lbl-pickbox" id="lblPickBox" hidden>
+      <span id="lblPickInfo">Belum ada aset dipilih</span>
+      <button type="button" id="btnLblPick">Pilih aset…</button>
+    </div>
     <label class="lbl-field"><span>Isi barcode</span>
       <select id="lblSource">
         <option value="inv">No. Inventaris (jika kosong: Serial)</option>
@@ -2081,14 +2119,38 @@ const Auth = (function () {
   </div>
 </div>
 
+<!-- Pilih aset yang akan dicetak -->
+<div id="lblPickOverlay" class="overlay sheet-overlay" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pkTitle">
+    <h2 id="pkTitle">Pilih aset yang dicetak</h2>
+    <input type="search" id="pkSearch" class="pk-search" placeholder="Cari nama, serial, inventaris, divisi…" autocomplete="off" aria-label="Cari aset">
+    <div class="pk-tools">
+      <button type="button" id="pkAll">Pilih semua yang cocok</button>
+      <button type="button" id="pkNone">Kosongkan pilihan</button>
+      <button type="button" id="pkPasteBtn">Tempel daftar kode</button>
+    </div>
+    <div class="pk-paste" id="pkPaste" hidden>
+      <textarea id="pkPasteText" placeholder="Satu kode per baris (Serial atau No. Inventaris), boleh dipisah koma atau spasi" aria-label="Daftar kode"></textarea>
+      <button type="button" class="pk-go" id="pkPasteGo">Pilih yang cocok</button>
+      <p class="pk-msg" id="pkPasteMsg"></p>
+    </div>
+    <div class="pk-count" id="pkCount"></div>
+    <div class="pk-list" id="pkList"></div>
+    <div class="sheet-actions">
+      <button type="button" id="pkDone" class="btn-primary">Selesai</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* Cetak label barcode (Code 128) ke PDF A4 — tanpa library eksternal.
  *
  * Bagian dari halaman riwayat (dimuat lewat <?!= include('Label') ?> setelah Export, SEBELUM skrip utama).
  * Memakai: Exporter (helper PDF), Tindakan (deskripsi filter), serta rows, total, loading, loadedOnce, getFiltered,
  * loadAllRows, render, showToast, fmt, Sheets milik History.html. Semuanya baru dipakai saat tombol ditekan.
- * Hanya barang yang tampil (hasil pencarian/filter) yang dicetak. Kode barcode berasal dari kolom
- * Inventaris / Serial; baris tanpa kode dilewati.
+ * Dua cara memilih aset: (1) "Sesuai tampilan tabel" = hasil pencarian/filter yang sedang tampil, atau
+ * (2) "Pilih sendiri" = layar pilih dengan pencarian + centang per aset + tempel daftar kode.
+ * Kode barcode berasal dari kolom Inventaris / Serial; baris tanpa kode dilewati.
  */
 const Labeler = (function () {
   const PREF_KEY = 'mac_label_v1';
@@ -2099,6 +2161,11 @@ const Labeler = (function () {
   const MAX_MODULE = 0.48 * MM;
   const ACCENT = '0.059 0.431 0.318';
   let busy = false;
+  let mode = 'all';            // 'all' = sesuai tabel, 'pick' = pilih sendiri
+  let picked = new Set();      // id baris yang dipilih
+  let pickedSheet = '';
+  let pickTimer = null;
+  const PICK_SHOW_MAX = 150;   // baris yang digambar sekaligus di layar pilih
 
   // Pola Code 128: tiap simbol = 6 lebar (bar, spasi, bar, spasi, bar, spasi); indeks 106 = penutup (7 lebar)
   const PATTERNS = '212222,222122,222221,121223,121322,131222,122213,122312,132212,221213,221312,231212,112232,122132,122231,113222,123122,123221,223211,221132,221231,213212,223112,312131,311222,321122,321221,312212,322112,322211,212123,212321,232121,111323,131123,131321,112313,132113,132311,211313,231113,231311,112133,112331,132131,113123,113321,133121,313121,211331,231131,213113,213311,213131,311123,311321,331121,312113,312311,332111,314111,221411,431111,111224,111422,121124,121421,141122,141221,112214,112412,122114,122411,142112,142211,241211,221114,413111,241112,134111,111242,121142,121241,114212,124112,124211,411212,421112,421211,212141,214121,412121,111143,111341,131141,114113,114311,411113,411311,113141,114131,311141,411131,211412,211214,211232,2331112'.split(',');
@@ -2166,9 +2233,13 @@ const Labeler = (function () {
   }
   function c0(x) { return String(x === null || x === undefined ? '' : x).trim() !== ''; }
 
+  function sourceRows() {
+    return mode === 'pick' ? rows.filter((r) => r.id && picked.has(r.id)) : getFiltered();
+  }
+
   function plan() {
     const source = $('lblSource').value;
-    const list = getFiltered();
+    const list = sourceRows();
     const items = [];
     let none = 0, bad = 0;
     list.forEach((r) => {
@@ -2205,11 +2276,14 @@ const Labeler = (function () {
 
   function refreshSummary() {
     const p = plan(), L = layoutOf(), st = startIndex();
-    const partial = rows.length < total;
+    const partial = mode === 'all' && rows.length < total;
     const sum = $('lblSum');
     let cls = 'lbl-sum';
     let t;
-    if (partial) {
+    if (mode === 'pick' && !picked.size) {
+      cls += ' err';
+      t = 'Belum ada aset dipilih. Tekan “Pilih aset…”.';
+    } else if (partial) {
       cls += ' warn';
       t = 'Seluruh ' + fmt(total) + ' data akan dimuat dulu saat PDF dibuat (baru ' + fmt(rows.length) + ' dimuat), lalu dicetak sesuai pencarian/filter.';
     } else if (!p.items.length) {
@@ -2226,6 +2300,108 @@ const Labeler = (function () {
     sum.className = cls;
     sum.textContent = t;
     $('btnLblGo').disabled = !p.items.length && !partial;
+    $('lblPickInfo').textContent = picked.size ? fmt(picked.size) + ' aset dipilih' : 'Belum ada aset dipilih';
+  }
+
+  function paintMode() {
+    $('lblModeAll').setAttribute('aria-pressed', mode === 'all' ? 'true' : 'false');
+    $('lblModePick').setAttribute('aria-pressed', mode === 'pick' ? 'true' : 'false');
+    $('lblPickBox').hidden = mode !== 'pick';
+    $('lblInfo').textContent = mode === 'pick' ? describePick() : describeAll();
+  }
+  function setMode(m) { mode = m; paintMode(); refreshSummary(); }
+
+  function describeAll() {
+    const parts = ['Mencetak aset yang sedang tampil'];
+    if (typeof query === 'string' && query) parts.push('hasil pencarian “' + query + '”');
+    if (hasColFilters()) parts.push('filter kolom: ' + filterNames());
+    if (Tindakan.active()) parts.push(Tindakan.describe());
+    if (!Sheets.isMain()) parts.push('sheet ' + Sheets.label());
+    return parts.join(' · ') + '. Atau pilih “Pilih sendiri” untuk menentukan aset satu per satu.';
+  }
+  function describePick() {
+    return 'Hanya aset yang Anda pilih yang dicetak' + (Sheets.isMain() ? '' : ' · sheet ' + Sheets.label()) + '. Pilihan tidak terpengaruh filter tabel.';
+  }
+
+  /* ---------- Layar pilih aset ---------- */
+  function hay(r) {
+    return [r.namaAset, r.kategori, r.serial, r.inventaris, r.divisi, r.pemilik, r.lantai, r.kondisi].join(' ').toLowerCase();
+  }
+  function pkMatches() {
+    const q = ($('pkSearch').value || '').toLowerCase().trim();
+    const toks = q ? q.split(/\s+/) : [];
+    if (!toks.length) return rows.slice();
+    return rows.filter((r) => { const h = hay(r); return toks.every((t) => h.indexOf(t) >= 0); });
+  }
+  function pkCountText(matches) {
+    let t = fmt(picked.size) + ' dipilih';
+    if (matches && matches.length > PICK_SHOW_MAX) t += ' · menampilkan ' + PICK_SHOW_MAX + ' dari ' + fmt(matches.length) + ' cocok (persempit pencarian)';
+    else if (matches) t += ' · ' + fmt(matches.length) + ' cocok';
+    return t;
+  }
+  function paintPicker() {
+    const source = $('lblSource').value;
+    const matches = pkMatches();
+    const list = matches.slice(0, PICK_SHOW_MAX);
+    $('pkCount').textContent = pkCountText(matches);
+    if (!list.length) { $('pkList').innerHTML = '<div class="pk-empty">Tidak ada aset yang cocok.</div>'; return; }
+    $('pkList').innerHTML = list.map((r) => {
+      const code = pickCode(r, source);
+      const off = code === '' || code === null || !r.id;
+      const ids = [r.serial ? 'SN ' + r.serial : '', r.inventaris ? 'INV ' + r.inventaris : ''].filter(Boolean).join(' · ');
+      const meta = [r.lantai ? 'Lt ' + r.lantai : '', r.divisi, r.kondisi].filter(Boolean).join(' · ');
+      return '<label class="pk-item' + (off ? ' off' : '') + '"><input type="checkbox" data-id="' + escapeAttr(r.id) + '"' + (picked.has(r.id) ? ' checked' : '') + (off ? ' disabled' : '') + '>' +
+        '<span class="pk-main"><b>' + escapeHtml(r.namaAset || r.kategori || '(tanpa nama)') + '</b>' +
+        (ids ? '<span class="pk-code">' + escapeHtml(ids) + '</span>' : '') +
+        (meta ? '<span>' + escapeHtml(meta) + '</span>' : '') +
+        (off ? '<span>' + (code === null ? 'Kode berisi karakter khusus, tidak bisa dibarcode' : 'Tanpa kode untuk dicetak') + '</span>' : '') +
+        '</span></label>';
+    }).join('');
+  }
+
+  async function openPicker() {
+    if (busy) return;
+    $('lblPickOverlay').hidden = false;
+    $('pkPasteMsg').textContent = '';
+    if (rows.length < total) {
+      $('pkCount').textContent = '';
+      $('pkList').innerHTML = '<div class="pk-empty" id="pkLoading">Memuat data…</div>';
+      try {
+        await loadAllRows((n, t) => { const el = $('pkLoading'); if (el) el.textContent = 'Memuat ' + fmt(n) + ' / ' + fmt(t) + '…'; });
+        render();
+      } catch (err) {
+        $('pkList').innerHTML = '<div class="pk-empty">Gagal memuat data. Tutup lalu coba lagi.</div>';
+        return;
+      }
+    }
+    paintPicker();
+    try { $('pkSearch').focus({ preventScroll: true }); } catch (e) { /* abaikan */ }
+  }
+  function closePicker() {
+    $('lblPickOverlay').hidden = true;
+    refreshSummary();
+  }
+
+  function pasteMatch() {
+    const toks = Array.from(new Set(($('pkPasteText').value || '').split(/[\s,;]+/).map((x) => x.trim()).filter(Boolean)));
+    if (!toks.length) { $('pkPasteMsg').textContent = 'Tempel dulu daftar kodenya.'; return; }
+    const byCode = {};
+    rows.forEach((r) => {
+      [r.serial, r.inventaris].forEach((c) => {
+        const k = String(c === null || c === undefined ? '' : c).trim().toLowerCase();
+        if (k) (byCode[k] = byCode[k] || []).push(r);
+      });
+    });
+    let hit = 0; const miss = []; let added = 0;
+    toks.forEach((t) => {
+      const list = byCode[t.toLowerCase()];
+      if (!list) { miss.push(t); return; }
+      hit++;
+      list.forEach((r) => { if (r.id && !picked.has(r.id)) { picked.add(r.id); added++; } });
+    });
+    $('pkPasteMsg').textContent = fmt(hit) + ' kode cocok' + (added ? ' (' + fmt(added) + ' aset ditambahkan)' : ' (sudah terpilih semua)') +
+      (miss.length ? ' · ' + fmt(miss.length) + ' tidak ditemukan: ' + miss.slice(0, 8).join(', ') + (miss.length > 8 ? ', …' : '') : '');
+    paintPicker();
   }
 
   function loadPrefs() {
@@ -2246,12 +2422,8 @@ const Labeler = (function () {
     if (!loadedOnce) { showToast('Data belum dimuat.'); return; }
     loadPrefs();
     $('lblStart').value = 1;
-    const parts = ['Mencetak aset yang sedang tampil'];
-    if (typeof query === 'string' && query) parts.push('hasil pencarian “' + query + '”');
-    if (hasColFilters()) parts.push('filter kolom: ' + filterNames());
-    if (Tindakan.active()) parts.push(Tindakan.describe());
-    if (!Sheets.isMain()) parts.push('sheet ' + Sheets.label());
-    $('lblInfo').textContent = parts.join(' · ') + '. Gunakan pencarian/filter dulu untuk memilih aset tertentu.';
+    if (pickedSheet !== Sheets.get()) { picked = new Set(); pickedSheet = Sheets.get(); mode = 'all'; }
+    paintMode();
     refreshSummary();
     $('lblOverlay').hidden = false;
   }
@@ -2410,9 +2582,31 @@ const Labeler = (function () {
       $(id).addEventListener('input', refreshSummary);
     });
     $('btnLblGo').addEventListener('click', run);
+
+    $('lblModeAll').addEventListener('click', () => setMode('all'));
+    $('lblModePick').addEventListener('click', () => { setMode('pick'); if (!picked.size) openPicker(); });
+    $('btnLblPick').addEventListener('click', openPicker);
+    $('pkDone').addEventListener('click', closePicker);
+    $('lblPickOverlay').addEventListener('click', (e) => { if (e.target === $('lblPickOverlay')) closePicker(); });
+    $('pkSearch').addEventListener('input', () => { clearTimeout(pickTimer); pickTimer = setTimeout(paintPicker, 120); });
+    $('pkList').addEventListener('change', (e) => {
+      const cb = e.target;
+      if (!cb || cb.type !== 'checkbox') return;
+      const id = cb.getAttribute('data-id');
+      if (cb.checked) picked.add(id); else picked.delete(id);
+      $('pkCount').textContent = pkCountText(pkMatches());
+    });
+    $('pkAll').addEventListener('click', () => {
+      const source = $('lblSource').value;
+      pkMatches().forEach((r) => { const c = pickCode(r, source); if (r.id && c) picked.add(r.id); });
+      paintPicker();
+    });
+    $('pkNone').addEventListener('click', () => { picked.clear(); paintPicker(); });
+    $('pkPasteBtn').addEventListener('click', () => { const b = $('pkPaste'); b.hidden = !b.hidden; if (!b.hidden) { try { $('pkPasteText').focus(); } catch (e) { /* abaikan */ } } });
+    $('pkPasteGo').addEventListener('click', pasteMatch);
   }
 
-  return { init: init, _code128Values: code128Values, _code128Widths: code128Widths, _buildPdf: buildPdf, _plan: plan, _pickCode: pickCode };
+  return { init: init, _code128Values: code128Values, _code128Widths: code128Widths, _buildPdf: buildPdf, _plan: plan, _pickCode: pickCode, _state: () => ({ mode: mode, picked: picked }) };
 })();
 </script>
 
@@ -3337,7 +3531,7 @@ const Tindakan = (function () {
 
   function closeAllDialogs() {
     cancelPress();
-    ['actOverlay', 'editOverlay', 'delOverlay', 'dupOverlay', 'clrOverlay', 'fltOverlay', 'lblOverlay', 'tdOverlay', 'bulkOverlay', 'menuOverlay', 'sheetOverlay'].forEach(id => { document.getElementById(id).hidden = true; });
+    ['actOverlay', 'editOverlay', 'delOverlay', 'dupOverlay', 'clrOverlay', 'fltOverlay', 'lblPickOverlay', 'lblOverlay', 'tdOverlay', 'bulkOverlay', 'menuOverlay', 'sheetOverlay'].forEach(id => { document.getElementById(id).hidden = true; });
     actionId = editingId = deletingId = pendingEdit = null;
     setDeleteBusy(false);
     setBulkBusy(false);
