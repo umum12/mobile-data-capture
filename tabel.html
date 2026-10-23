@@ -1439,7 +1439,7 @@ const Auth = (function () {
 /* Ekspor Excel / PDF — tanpa library eksternal.
  *
  * Dipisah dari History.html supaya file itu tidak terlalu besar saat ditempel ke editor Apps Script.
- * Ini bagian dari halaman riwayat (dimuat lewat <?!= include('Export') ?> SEBELUM skrip utama) dan memakai
+ * Ini bagian dari halaman riwayat (blok terpisah di berkas ini SEBELUM skrip utama) dan memakai
  * fungsi/variabel milik skrip utama History.html: rows, total, loading, loadedOnce, query, sortState,
  * getFiltered, activeColumns, hasColFilters, filterNames, sortLabel, fieldOf, showToast, fmt, pad2,
  * escapeHtml, Sheets, Auth. Label.html memakai Exporter._helpers (winAnsi, textW, hex, download, fileStamp). Semuanya baru dipakai saat tombol Ekspor ditekan (setelah halaman siap),
@@ -2145,7 +2145,7 @@ const Auth = (function () {
 <script>
 /* Cetak label barcode (Code 128) ke PDF A4 — tanpa library eksternal.
  *
- * Bagian dari halaman riwayat (dimuat lewat <?!= include('Label') ?> setelah Export, SEBELUM skrip utama).
+ * Bagian dari halaman riwayat (blok terpisah di berkas ini setelah Export, SEBELUM skrip utama).
  * Memakai: Exporter (helper PDF), Tindakan (deskripsi filter), serta rows, total, loading, loadedOnce, getFiltered,
  * loadAllRows, render, showToast, fmt, Sheets milik History.html. Semuanya baru dipakai saat tombol ditekan.
  * Dua cara memilih aset: (1) "Sesuai tampilan tabel" = hasil pencarian/filter yang sedang tampil, atau
@@ -2664,7 +2664,7 @@ const Labeler = (function () {
 <script>
 /* Filter "Perlu tindakan" — aset rusak / hilang / belum dicek (opsional: sudah diinput ≥ N hari).
  *
- * Bagian dari halaman riwayat (dimuat lewat <?!= include('Tindakan') ?> setelah Label, SEBELUM skrip utama).
+ * Bagian dari halaman riwayat (blok terpisah di berkas ini setelah Label, SEBELUM skrip utama).
  * Skrip utama History.html memanggil: Tindakan.init(), Tindakan.active(), Tindakan.matches(row),
  * Tindakan.describe(), Tindakan.clear(). Modul ini memakai rows, total, loading, render, loadAllRows,
  * showToast, fmt dari skrip utama (baru dipakai saat tombol ditekan). Pilihan sengaja TIDAK disimpan

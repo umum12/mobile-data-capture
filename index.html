@@ -1011,6 +1011,7 @@ const Auth = (function () {
   <nav class="mode-tabs" id="modeTabs" role="tablist" aria-label="Mode">
     <button type="button" role="tab" id="tabInput" aria-selected="true"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10h11v2H3v-2zm0-2h11V6H3v2zm0 8h7v-2H3v2zm15.01-3.13l.71-.71c.39-.39 1.02-.39 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71-2.12-2.12zm-.71.71l-5.3 5.3V21h2.12l5.3-5.3-2.12-2.12z"/></svg> INPUT ASET</button>
     <button type="button" role="tab" id="tabCek" aria-selected="false"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 7h-9v2h9V7zm0 8h-9v2h9v-2zM5.54 11L2 7.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 11zm0 8L2 15.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 19z"/></svg> CEK STOK</button>
+    <button type="button" role="tab" id="tabDash" aria-selected="false"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg> DASBOR</button>
   </nav>
 
   <main class="content">
@@ -1450,7 +1451,9 @@ const CamScan = (function () {
   .mode-tabs{display:flex;gap:6px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--border);}
   .mode-tabs button{flex:1;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;border:1.5px solid var(--border);
     background:var(--bg);color:var(--muted);font-size:13px;font-weight:800;letter-spacing:.04em;}
-  .mode-tabs button .mi{width:20px;height:20px;}
+  .mode-tabs button .mi{width:20px;height:20px;flex:none;}
+  .mode-tabs button{padding:0 4px;min-width:0;white-space:nowrap;}
+  @media (max-width:420px){.mode-tabs{gap:4px;padding:8px 8px;}.mode-tabs button{font-size:12px;letter-spacing:.02em;gap:4px;}.mode-tabs button .mi{display:none;}}
   .mode-tabs button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff;}
   body.mode-cek .content, body.mode-cek .app-footer{display:none !important;}
   .cek-view{padding:12px 12px 40px;}
@@ -1713,13 +1716,20 @@ const Cek = (function () {
 
   /* ---------- Mode tab ---------- */
   function setMode(m, quiet) {
-    mode = m === 'cek' ? 'cek' : 'input';
+    const prev = mode;
+    mode = m === 'cek' ? 'cek' : (m === 'dash' && typeof Dash !== 'undefined' ? 'dash' : 'input');
     document.body.classList.toggle('mode-cek', mode === 'cek');
+    document.body.classList.toggle('mode-dash', mode === 'dash');
     $('cekView').hidden = mode !== 'cek';
+    const dv = document.getElementById('dashView'); if (dv) dv.hidden = mode !== 'dash';
     $('tabInput').setAttribute('aria-selected', mode === 'input' ? 'true' : 'false');
     $('tabCek').setAttribute('aria-selected', mode === 'cek' ? 'true' : 'false');
+    const td = document.getElementById('tabDash'); if (td) td.setAttribute('aria-selected', mode === 'dash' ? 'true' : 'false');
     try { if (!quiet) localStorage.setItem(MODE_KEY, mode); } catch (e) {}
-    if (mode === 'cek') { onEnter(); } else { try { window.scrollTo(0, 0); } catch (e) {} }
+    if (prev === 'dash' && mode !== 'dash' && typeof Dash !== 'undefined') Dash.onLeave();
+    if (mode === 'cek') { onEnter(); }
+    else if (mode === 'dash') { try { window.scrollTo(0, 0); } catch (e) {} Dash.onEnter(); }
+    else { try { window.scrollTo(0, 0); } catch (e) {} }
   }
 
   function onEnter() {
@@ -2135,6 +2145,8 @@ const Cek = (function () {
   function bind() {
     $('tabInput').addEventListener('click', function () { setMode('input'); });
     $('tabCek').addEventListener('click', function () { Feedback.unlock(); setMode('cek'); });
+    const tdash = document.getElementById('tabDash');
+    if (tdash) tdash.addEventListener('click', function () { setMode('dash'); });
     Feedback.bindButton($('cekSound'));
     $('cekRefresh').innerHTML = MI.svg('refresh');
     $('cekCam').innerHTML = MI.svg('qr') + ' SCAN DENGAN KAMERA';
@@ -2226,9 +2238,291 @@ const Cek = (function () {
       render();
     },
     onSheetChange: function () { loaded = false; $('cekResult').hidden = true; if (mode === 'cek') onEnter(); else $('cekSheetLbl').textContent = Sheets.label(); },
-    mode: function () { return mode; }
+    mode: function () { return mode; },
+    setMode: setMode
   };
 })();
+</script>
+
+<style>
+  body.mode-dash .content, body.mode-dash .app-footer{display:none !important;}
+  .ds-view{padding:12px 12px 40px;}
+  .ds-view[hidden]{display:none;}
+  .ds-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;}
+  .ds-h{display:flex;align-items:center;gap:6px;margin:0 0 10px;}
+  .ds-h h2{flex:1;min-width:0;margin:0;font-size:12.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+  .ds-sub{font-size:12px;color:var(--muted);}
+  .ds-refresh{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:0;background:none;border-radius:10px;color:var(--muted);}
+  .ds-refresh .mi{width:22px;height:22px;}
+  .ds-refresh.spin .mi{animation:hspin .8s linear infinite;}
+  .ds-top{display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+  .ds-top .ds-sheet{flex:1;min-width:0;font-size:12.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);}
+  .ds-top .ds-upd{font-size:12px;color:var(--muted);}
+
+  /* KPI */
+  .ds-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+  .ds-kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;min-width:0;}
+  .ds-kpi.wide{grid-column:1 / -1;}
+  .ds-kpi .k-l{display:block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .ds-kpi .k-v{display:block;margin-top:2px;font-size:30px;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums;color:var(--text);}
+  .ds-kpi .k-s{display:block;margin-top:2px;font-size:12.5px;color:var(--muted);line-height:1.35;}
+  .ds-kpi.warn{border-color:var(--warn-bd);background:var(--warn-bg);}
+  .ds-kpi.warn .k-v{color:var(--warn-fg);}
+  .ds-kpi.bad .k-v{color:var(--bad-fg);}
+  .ds-bar{height:12px;margin-top:10px;border-radius:99px;background:var(--border);overflow:hidden;}
+  .ds-bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .25s ease;}
+  .ds-bar.full i{background:#16A34A;}
+  @media (prefers-reduced-motion: reduce){.ds-bar i{transition:none;}}
+
+  /* Donut kondisi */
+  .ds-donut-row{display:flex;align-items:center;gap:14px;}
+  .ds-donut{flex:none;width:132px;height:132px;position:relative;}
+  .ds-donut svg{width:100%;height:100%;transform:rotate(-90deg);}
+  .ds-donut circle{fill:none;stroke-width:5.2;}
+  .ds-donut .bg{stroke:var(--border);}
+  .ds-donut .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  .ds-donut .ctr b{font-size:22px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;}
+  .ds-donut .ctr span{font-size:11px;color:var(--muted);font-weight:700;}
+  .ds-legend{flex:1;min-width:0;list-style:none;margin:0;padding:0;}
+  .ds-legend li{display:flex;align-items:center;gap:8px;min-height:30px;font-size:13.5px;}
+  .ds-legend .sw{flex:none;width:12px;height:12px;border-radius:4px;}
+  .ds-legend .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ds-legend .vl{flex:none;font-weight:800;font-variant-numeric:tabular-nums;}
+  .ds-legend .pc{flex:none;width:38px;text-align:right;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;}
+  .c-baik{background:#16A34A;stroke:#16A34A;} .c-cukup{background:#5EA3E8;stroke:#5EA3E8;}
+  .c-rusakRingan{background:#F59E0B;stroke:#F59E0B;} .c-rusak{background:#DC2626;stroke:#DC2626;}
+  .c-hilang{background:#7C3AED;stroke:#7C3AED;} .c-lain{background:#9CA3AF;stroke:#9CA3AF;}
+  @media (max-width:360px){.ds-donut-row{flex-direction:column;align-items:stretch;}.ds-donut{align-self:center;}}
+
+  /* Aktivitas harian */
+  .ds-act-legend{display:flex;gap:14px;margin:0 0 8px;font-size:12.5px;color:var(--muted);}
+  .ds-act-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .ds-act-legend i{width:12px;height:12px;border-radius:4px;display:inline-block;}
+  .ds-cols{display:flex;align-items:flex-end;gap:3px;height:120px;border-bottom:1px solid var(--border);}
+  .ds-col{flex:1;min-width:0;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:2px;padding:0;border:0;background:none;border-radius:6px;position:relative;}
+  .ds-col[aria-pressed="true"]{background:var(--accent-bg);}
+  .ds-col i{display:block;width:34%;max-width:9px;min-height:0;border-radius:3px 3px 0 0;}
+  .ds-col i.a{background:var(--accent);} .ds-col i.b{background:#5EA3E8;}
+  .ds-xaxis{display:flex;gap:3px;margin-top:4px;font-size:10.5px;color:var(--muted);}
+  .ds-xaxis span{flex:1;min-width:0;text-align:center;overflow:hidden;}
+  .ds-readout{margin-top:8px;min-height:20px;font-size:13px;color:var(--text);}
+  .ds-readout b{font-weight:800;}
+
+  /* Batang horizontal */
+  .ds-hbars{list-style:none;margin:0;padding:0;}
+  .ds-hbars li{margin:0 0 10px;}
+  .ds-hbars li:last-child{margin-bottom:0;}
+  .ds-hl{display:flex;align-items:baseline;gap:8px;font-size:13.5px;}
+  .ds-hn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;}
+  .ds-hv{flex:none;font-weight:800;font-variant-numeric:tabular-nums;}
+  .ds-track{height:8px;margin-top:4px;border-radius:99px;background:var(--border);overflow:hidden;}
+  .ds-track i{display:block;height:100%;background:var(--accent);border-radius:0 4px 4px 0;}
+  .ds-hs{margin-top:3px;font-size:12px;color:var(--muted);}
+  .ds-hs .bad{color:var(--bad-fg);font-weight:700;}
+
+  /* Perlu perhatian */
+  .ds-attn{list-style:none;margin:0;padding:0;}
+  .ds-attn li{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+  .ds-attn li:last-child{border-bottom:0;}
+  .ds-attn .at-m{flex:1;min-width:0;}
+  .ds-attn .at-m b{display:block;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ds-attn .at-m span{display:block;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ds-attn .kd{flex:none;margin:0;}
+  .ds-link{display:flex;align-items:center;justify-content:center;min-height:44px;margin-top:8px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);color:var(--accent-text);font-size:13px;font-weight:800;letter-spacing:.03em;text-decoration:none;}
+  .ds-pet{list-style:none;margin:0;padding:0;}
+  .ds-pet li{display:flex;gap:8px;padding:6px 0;font-size:13.5px;}
+  .ds-pet .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .ds-pet .vl{flex:none;font-weight:800;font-variant-numeric:tabular-nums;}
+  .ds-empty{padding:18px 6px;text-align:center;font-size:13.5px;color:var(--muted);}
+  .ds-err{margin-bottom:12px;padding:12px 14px;border-radius:var(--radius);background:var(--bad-bg);color:var(--bad-fg);font-size:13.5px;font-weight:700;display:flex;gap:10px;align-items:center;}
+  .ds-err[hidden]{display:none;}
+  .ds-err span{flex:1;}
+  .ds-err button{flex:none;min-height:40px;padding:0 14px;border-radius:10px;border:1.5px solid currentColor;background:none;color:inherit;font-weight:800;}
+  .ds-view.loading .ds-body{opacity:.55;}
+  .ds-view.loading .ds-body{transition:opacity .15s;}
+</style>
+
+<section id="dashView" class="ds-view" hidden aria-label="Dasbor ringkasan">
+  <div class="ds-top">
+    <span class="ds-sheet" id="dsSheet">Utama</span>
+    <span class="ds-upd" id="dsUpd"></span>
+    <button type="button" id="dsRefresh" class="ds-refresh" aria-label="Muat ulang dasbor" title="Muat ulang"></button>
+  </div>
+  <div id="dsErr" class="ds-err" hidden role="alert"><span id="dsErrTxt"></span><button type="button" id="dsRetry">Coba lagi</button></div>
+
+  <div class="ds-body" id="dsBody">
+    <div class="ds-empty" id="dsLoading">Memuat…</div>
+  </div>
+</section>
+
+<script>
+/* Dasbor — ringkasan satu layar (hanya membaca). Angka dihitung di server (getDashboard). */
+const Dash = (function () {
+  const $ = id => document.getElementById(id);
+  const KONDISI = [
+    ['baik', 'Baik'], ['cukup', 'Cukup Baik'], ['rusakRingan', 'Rusak Ringan'],
+    ['rusak', 'Rusak / TLP'], ['hilang', 'Hilang'], ['lain', 'Tidak diisi']
+  ];
+  const cache = {};          // per sheet: { data, at }
+  let active = false, seq = 0, curSheet = '', selDay = -1;
+
+  function esc(s) { return String(s === null || s === undefined ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function n(v) { try { return Number(v || 0).toLocaleString('id-ID'); } catch (e) { return String(v || 0); } }
+  function pct(a, b) { return b ? Math.floor(a * 100 / b) : 0; }
+  function call(name, args) {
+    return new Promise(function (resolve, reject) {
+      Auth.call(name, args, resolve, function () { reject(new Error('Koneksi gagal. Periksa jaringan lalu coba lagi.')); }, function () { reject(new Error('Sesi berakhir.')); });
+    });
+  }
+
+  /* ---------- Potongan tampilan ---------- */
+  function donut(d) {
+    const total = d.total, k = d.kondisi;
+    const gap = 0.7;
+    let off = 0, segs = '';
+    KONDISI.forEach(function (it) {
+      const v = k[it[0]] || 0;
+      if (!v || !total) return;
+      const len = v * 100 / total;
+      const vis = Math.max(len - (len < 100 ? gap : 0), 0.4);
+      segs += '<circle class="c-' + it[0] + '" cx="21" cy="21" r="15.9155" pathLength="100" stroke-dasharray="' + vis.toFixed(2) + ' ' + (100 - vis).toFixed(2) + '" stroke-dashoffset="' + (-off).toFixed(2) + '"/>';
+      off += len;
+    });
+    const legend = KONDISI.filter(it => (k[it[0]] || 0) > 0 || it[0] === 'baik').map(function (it) {
+      const v = k[it[0]] || 0;
+      return '<li><span class="sw c-' + it[0] + '" aria-hidden="true"></span><span class="nm">' + esc(it[1]) + '</span><span class="vl">' + n(v) + '</span><span class="pc">' + pct(v, total) + '%</span></li>';
+    }).join('');
+    return '<div class="ds-donut-row"><div class="ds-donut"><svg viewBox="0 0 42 42" role="img" aria-label="Komposisi kondisi aset"><circle class="bg" cx="21" cy="21" r="15.9155"/>' + segs + '</svg>' +
+      '<div class="ctr"><b>' + n(total) + '</b><span>aset</span></div></div><ul class="ds-legend">' + legend + '</ul></div>';
+  }
+
+  function hbars(list, emptyTxt) {
+    if (!list || !list.length) return '<div class="ds-empty">' + esc(emptyTxt || 'Belum ada data.') + '</div>';
+    let max = 1; list.forEach(x => { if (x.n > max) max = x.n; });
+    return '<ul class="ds-hbars">' + list.map(function (x) {
+      const sub = n(x.dicek) + ' dicek' + (x.masalah ? ' · <span class="bad">' + n(x.masalah) + ' rusak/hilang</span>' : '') + (x.merged ? ' · ' + x.merged + ' jenis' : '');
+      return '<li><div class="ds-hl"><span class="ds-hn">' + esc(x.label) + '</span><span class="ds-hv">' + n(x.n) + '</span></div>' +
+        '<div class="ds-track" aria-hidden="true"><i style="width:' + Math.max(2, Math.round(x.n * 100 / max)) + '%"></i></div><div class="ds-hs">' + sub + '</div></li>';
+    }).join('') + '</ul>';
+  }
+
+  function activity(d) {
+    let max = 1; d.harian.forEach(x => { max = Math.max(max, x.input, x.cek); });
+    const cols = d.harian.map(function (x, i) {
+      const ha = Math.round(x.input * 100 / max), hb = Math.round(x.cek * 100 / max);
+      return '<button type="button" class="ds-col" data-i="' + i + '" aria-pressed="' + (i === selDay ? 'true' : 'false') + '" aria-label="' + esc(x.label) + ': input ' + x.input + ', cek ' + x.cek + '">' +
+        '<i class="a" style="height:' + (x.input ? Math.max(ha, 3) : 0) + '%"></i><i class="b" style="height:' + (x.cek ? Math.max(hb, 3) : 0) + '%"></i></button>';
+    }).join('');
+    const x = d.harian.map((v, i) => '<span>' + ((i % 2 === (d.harian.length - 1) % 2) ? esc(v.label.slice(0, 2)) : '') + '</span>').join('');
+    return '<div class="ds-act-legend"><span><i style="background:var(--accent)"></i>Input aset</span><span><i style="background:#5EA3E8"></i>Cek stok</span></div>' +
+      '<div class="ds-cols">' + cols + '</div><div class="ds-xaxis">' + x + '</div><div class="ds-readout" id="dsReadout" aria-live="polite"></div>';
+  }
+
+  function readout(d) {
+    const el = $('dsReadout'); if (!el) return;
+    const x = d.harian[selDay];
+    el.innerHTML = x ? '<b>' + esc(x.label) + '</b> · input ' + n(x.input) + ' · cek ' + n(x.cek)
+      : 'Hari ini: <b>' + n(d.input.hariIni) + '</b> input · <b>' + n(d.cekHariIni) + '</b> cek. Ketuk batang untuk lihat per hari.';
+  }
+
+  function attention(d) {
+    if (!d.perhatian.length) return '<div class="ds-empty">Tidak ada aset rusak atau hilang.</div>';
+    const rows = d.perhatian.map(function (a) {
+      const cls = /hilang|rusak$|tidak layak/i.test(a.kondisi) ? 'bad' : 'warn';
+      const meta = [a.kategori, a.serial, a.lantai ? 'Lt ' + a.lantai : '', a.divisi].filter(Boolean).join(' · ');
+      return '<li><div class="at-m"><b>' + esc(a.namaAset || '(tanpa nama)') + '</b><span>' + esc(meta) + '</span></div><span class="kd ' + cls + '">' + esc(a.kondisi) + '</span></li>';
+    }).join('');
+    const more = d.perhatianTotal > d.perhatian.length ? '<div class="ds-hs" style="margin-top:6px">Menampilkan ' + d.perhatian.length + ' dari ' + n(d.perhatianTotal) + ' aset. Hilang lebih dulu.</div>' : '';
+    return '<ul class="ds-attn">' + rows + '</ul>' + more;
+  }
+
+  function paint(d) {
+    const body = $('dsBody');
+    $('dsSheet').textContent = d.sheetLabel || '';
+    $('dsUpd').textContent = d.diperbarui ? 'Diperbarui ' + d.diperbarui : '';
+    if (!d.total) {
+      body.innerHTML = '<div class="ds-card"><div class="ds-empty">Belum ada data di sheet ini.<br>Mulai dari tab INPUT ASET.</div></div>';
+      return;
+    }
+    const o = d.opname, p = pct(o.dicek, d.total), td = d.tindakan;
+    const history = document.getElementById('btnHistory');
+    const href = history ? history.getAttribute('href') : '#';
+    body.innerHTML =
+      '<div class="ds-kpis">' +
+        '<div class="ds-kpi"><span class="k-l">Total aset</span><span class="k-v">' + n(d.total) + '</span><span class="k-s">+' + n(d.input.hariIni) + ' hari ini · ' + n(d.input.bulanIni) + ' bulan ini</span></div>' +
+        '<div class="ds-kpi ' + (td.gabungan ? 'warn' : '') + '"><span class="k-l">Perlu tindakan</span><span class="k-v">' + n(td.gabungan) + '</span><span class="k-s">' + n(td.rusak) + ' rusak · ' + n(td.hilang) + ' hilang · ' + n(td.belum) + ' belum dicek</span></div>' +
+        '<div class="ds-kpi wide"><span class="k-l">Progres cek stok</span><span class="k-v">' + p + '%<span style="font-size:14px;font-weight:700;color:var(--muted)"> · ' + n(o.dicek) + ' dari ' + n(d.total) + ' sudah dicek</span></span>' +
+          '<div class="ds-bar' + (p >= 100 ? ' full' : '') + '" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + p + '" aria-label="Progres cek stok"><i style="width:' + p + '%"></i></div>' +
+          '<span class="k-s" style="margin-top:8px">' + n(o.dicekRecent) + ' dicek dalam ' + o.recentDays + ' hari terakhir · ' + n(o.belum) + ' belum pernah dicek</span></div>' +
+      '</div>' +
+      '<section class="ds-card"><div class="ds-h"><h2>Kondisi aset</h2></div>' + donut(d) + '</section>' +
+      '<section class="ds-card"><div class="ds-h"><h2>Aktivitas 14 hari</h2></div>' + activity(d) + '</section>' +
+      '<section class="ds-card"><div class="ds-h"><h2>Perlu perhatian</h2><span class="ds-sub">' + n(d.perhatianTotal) + ' aset</span></div>' + attention(d) +
+        '<a class="ds-link" href="' + esc(href) + '" target="_blank" rel="noopener">BUKA TABEL DATA</a></section>' +
+      '<section class="ds-card"><div class="ds-h"><h2>Per kategori</h2></div>' + hbars(d.kategori) + '</section>' +
+      '<section class="ds-card"><div class="ds-h"><h2>Per lantai</h2></div>' + hbars(d.lantai) + '</section>' +
+      '<section class="ds-card"><div class="ds-h"><h2>Per divisi</h2></div>' + hbars(d.divisi) + '</section>' +
+      (d.petugas.length ? '<section class="ds-card"><div class="ds-h"><h2>Petugas input bulan ini</h2></div><ul class="ds-pet">' +
+        d.petugas.map(x => '<li><span class="nm">' + esc(x.nama) + '</span><span class="vl">' + n(x.n) + '</span></li>').join('') + '</ul></section>' : '');
+    readout(d);
+  }
+
+  /* ---------- Muat ---------- */
+  function showErr(msg) { $('dsErrTxt').textContent = msg; $('dsErr').hidden = !msg; }
+
+  function load() {
+    if (!Auth.user) return;
+    const sk = Sheets.get(), my = ++seq;
+    curSheet = sk; selDay = -1;
+    const c = cache[sk];
+    $('dsSheet').textContent = Sheets.label();
+    if (c) paint(c.data); else { $('dsBody').innerHTML = '<div class="ds-empty">Memuat…</div>'; $('dsUpd').textContent = ''; }
+    showErr('');
+    $('dsRefresh').classList.add('spin');
+    $('dashView').classList.toggle('loading', !!c);
+    call('getDashboard', [sk]).then(function (d) {
+      if (my !== seq) return;
+      $('dsRefresh').classList.remove('spin'); $('dashView').classList.remove('loading');
+      if (!d || d.authRequired) return;
+      cache[sk] = { data: d, at: Date.now() };
+      paint(d);
+    }).catch(function (e) {
+      if (my !== seq) return;
+      $('dsRefresh').classList.remove('spin'); $('dashView').classList.remove('loading');
+      showErr(e.message);
+    });
+  }
+
+  function bind() {
+    $('dsRefresh').innerHTML = MI.svg('refresh');
+    $('dsRefresh').addEventListener('click', load);
+    $('dsRetry').addEventListener('click', load);
+    $('dsBody').addEventListener('click', function (e) {
+      const b = e.target.closest ? e.target.closest('.ds-col') : null;
+      const c = cache[curSheet];
+      if (!b || !c) return;
+      const i = Number(b.getAttribute('data-i'));
+      selDay = selDay === i ? -1 : i;
+      document.querySelectorAll('.ds-col').forEach(function (el) { el.setAttribute('aria-pressed', Number(el.getAttribute('data-i')) === selDay ? 'true' : 'false'); });
+      readout(c.data);
+    });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && active && Auth.user) load(); });
+  }
+  bind();
+
+  return {
+    onEnter: function () { active = true; if (Auth.user) load(); },
+    onLeave: function () { active = false; },
+    onLogin: function () { if (active) load(); },
+    onLogout: function () { seq++; Object.keys(cache).forEach(k => delete cache[k]); $('dsBody').innerHTML = ''; $('dsErr').hidden = true; },
+    onSheetChange: function () { if (active) load(); },
+    isActive: function () { return active; }
+  };
+})();
+</script>
+<script>
+/* Halaman dibuka kembali di tab Dasbor: Cek (dimuat lebih dulu) belum mengenal Dash saat memulihkan tab */
+try { if (localStorage.getItem('mac_mode_v1') === 'dash') Cek.setMode('dash', true); } catch (e) {}
 </script>
 
 
@@ -2475,7 +2769,9 @@ const Cek = (function () {
     hideCheck();
     loadInitial();
     if ((typeof Cek !== 'undefined')) Cek.onSheetChange();
-    showToast(((typeof Cek !== 'undefined') && Cek.mode() === 'cek' ? 'Cek stok: ' : 'Simpan ke: ') + Sheets.label());
+    if ((typeof Dash !== 'undefined')) Dash.onSheetChange();
+    const md = (typeof Cek !== 'undefined') ? Cek.mode() : 'input';
+    showToast((md === 'cek' ? 'Cek stok: ' : md === 'dash' ? 'Dasbor: ' : 'Simpan ke: ') + Sheets.label());
   }
 
   let initSeq = 0;
@@ -2512,6 +2808,7 @@ const Cek = (function () {
 
   function onLoggedIn() {
     if ((typeof Cek !== 'undefined')) Cek.onLogin();
+    if ((typeof Dash !== 'undefined')) Dash.onLogin();
     updateScanHint();
     renderPetugasStatus();
     loadInitial();
@@ -2528,6 +2825,7 @@ const Cek = (function () {
   // Isian form (nama aset, serial, dll.) sengaja dibiarkan supaya pekerjaan yang sedang diketik tidak hilang.
   function onLockedOut() {
     if ((typeof Cek !== 'undefined')) Cek.onLogout();
+    if ((typeof Dash !== 'undefined')) Dash.onLogout();
     isSaving = false;
     setSaveButtonState(false);
     pendingSaveData = null;
