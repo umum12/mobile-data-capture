@@ -10,6 +10,11 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0F6E51">
 <script src="config.js"></script>
+<!-- UI-FONTS:begin -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,bolt,check,check_circle,checklist,close,dark_mode,dashboard,delete,description,edit,edit_note,error,expand_more,filter_list,history,home,info,light_mode,logout,menu,photo_camera,qr_code_scanner,refresh,restart_alt,save,search,undo,volume_off,volume_up,warning&display=swap">
+<!-- UI-FONTS:end -->
 <script>
 /* Tema: diterapkan sebelum halaman digambar supaya tidak berkedip. Pilihan: auto | light | dark */
 (function () {
@@ -21,13 +26,13 @@
 </script>
 <style>
   :root{
-    --bg:#F4F6F8;
+    --bg:#F1F4F2;
     --surface:#FFFFFF;
-    --border:#E2E6EA;
-    --text:#161B22;
-    --muted:#6B7280;
+    --border:#DCE3DF;
+    --text:#14201B;
+    --muted:#5B6862;
     --accent:#0F6E51;
-    --save:#16A34A;
+    --save:#0F6E51;
     --save-disabled:#9CA8B5;
     --serial:#2563EB;
     --serial-bg:#EEF4FF;
@@ -35,45 +40,46 @@
     --inventaris-bg:#FFF6EA;
     --danger:#DC2626;
     --warning:#B45309;
-    --radius:14px;
-    --radius-sm:10px;
-    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --radius:16px;
+    --radius-sm:12px;
+    --font:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Roboto Mono","Courier New",monospace;
     --accent-text:#0F6E51;
-    --accent-bg:#E6F4EE;
+    --accent-bg:#E2F1EA;
     --ok-bg:#EAF7EE; --ok-fg:#16803D; --ok-bd:#BFE5C8;
     --warn-bg:#FFFBEB; --warn-fg:#B45309; --warn-bd:#FFD9A0;
     --bad-bg:#FDECEC; --bad-fg:#B91C1C; --bad-bd:#F3B4B4;
-    --surface-2:#F9FAFB; --row-alt:#F2F5F8; --row-checked:#FFF1A8; --row-press:#DDEFE7; --row-sel:#C9E8DA; --row-bulk:#FECACA;
-    --amber:#D97706; --toast-bg:#161B22;
+    --surface-2:#F8FAF9; --row-alt:#F3F6F4; --row-checked:#FFF1A8; --row-press:#DDEFE7; --row-sel:#C9E8DA; --row-bulk:#FECACA;
+    --amber:#D97706; --toast-bg:#14201B;
     color-scheme:light;
   }
   :root[data-theme="dark"]{
-    --bg:#0E1215; --surface:#171C21; --border:#2B343C; --text:#E8ECEF; --muted:#9AA5AF;
-    --accent:#188A62; --accent-text:#5ED3A6; --accent-bg:#14312A;
-    --save:#1D9A4B; --save-disabled:#4A5560;
+    --bg:#0B100E; --surface:#141B18; --border:#25322C; --text:#E6EEEA; --muted:#93A39B;
+    --accent:#17936A; --accent-text:#62D6AA; --accent-bg:#12302A;
+    --save:#17936A; --save-disabled:#44524B;
     --serial:#7AA7FF; --serial-bg:#16233D;
     --inventaris:#F0A34A; --inventaris-bg:#33260F; --warning:#F0A34A;
     --danger:#F0605D;
     --ok-bg:#12301F; --ok-fg:#6FD79A; --ok-bd:#245A3A;
     --warn-bg:#33260F; --warn-fg:#F0B15F; --warn-bd:#5B4217;
     --bad-bg:#3A1717; --bad-fg:#FCA5A5; --bad-bd:#6A2A2A;
-    --surface-2:#1C2328; --row-alt:#1A2025; --row-checked:#4A4210; --row-press:#1E3B31; --row-sel:#235544; --row-bulk:#5B2222;
-    --amber:#C26A06; --toast-bg:#2E3943;
+    --surface-2:#19211E; --row-alt:#171E1B; --row-checked:#4A4210; --row-press:#1E3B31; --row-sel:#235544; --row-bulk:#5B2222;
+    --amber:#C26A06; --toast-bg:#2A3631;
     color-scheme:dark;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-    --bg:#0E1215; --surface:#171C21; --border:#2B343C; --text:#E8ECEF; --muted:#9AA5AF;
-    --accent:#188A62; --accent-text:#5ED3A6; --accent-bg:#14312A;
-    --save:#1D9A4B; --save-disabled:#4A5560;
+    --bg:#0B100E; --surface:#141B18; --border:#25322C; --text:#E6EEEA; --muted:#93A39B;
+    --accent:#17936A; --accent-text:#62D6AA; --accent-bg:#12302A;
+    --save:#17936A; --save-disabled:#44524B;
     --serial:#7AA7FF; --serial-bg:#16233D;
     --inventaris:#F0A34A; --inventaris-bg:#33260F; --warning:#F0A34A;
     --danger:#F0605D;
     --ok-bg:#12301F; --ok-fg:#6FD79A; --ok-bd:#245A3A;
     --warn-bg:#33260F; --warn-fg:#F0B15F; --warn-bd:#5B4217;
     --bad-bg:#3A1717; --bad-fg:#FCA5A5; --bad-bd:#6A2A2A;
-    --surface-2:#1C2328; --row-alt:#1A2025; --row-checked:#4A4210; --row-press:#1E3B31; --row-sel:#235544; --row-bulk:#5B2222;
-    --amber:#C26A06; --toast-bg:#2E3943;
+    --surface-2:#19211E; --row-alt:#171E1B; --row-checked:#4A4210; --row-press:#1E3B31; --row-sel:#235544; --row-bulk:#5B2222;
+    --amber:#C26A06; --toast-bg:#2A3631;
     color-scheme:dark;
     }
   }
@@ -233,7 +239,7 @@
   .accent-inventaris label{color:var(--inventaris);}
 
   /* Font monospace khusus Serial/Inventaris — hindari ambigu 0/O, 1/I/l saat verifikasi */
-  .mono{font-family:'SF Mono','Roboto Mono','Courier New',monospace;letter-spacing:.02em;}
+  .mono{font-family:var(--mono);letter-spacing:.02em;}
 
   /* Truncate teks panjang di tabel Data Terakhir, supaya tidak merusak layout di HP kecil */
   .cell-truncate{
@@ -548,7 +554,8 @@ const Sheets = (function () {
 
 const MI = (function () {
   const P = {"refresh": "M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z", "logout": "M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z", "description": "M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z", "history": "M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z", "expand": "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z", "reset": "M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93 0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34A7.958 7.958 0 0 0 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z", "close": "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z", "info": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z", "search": "M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z", "edit": "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z", "camera": "M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z", "delete": "M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z", "check": "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z", "check_circle": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z", "warning": "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z", "save": "M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z", "volume_up": "M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.97v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z", "volume_off": "M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51A8.796 8.796 0 0 0 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 0 0 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z", "qr": "M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z", "checklist": "M22 7h-9v2h9V7zm0 8h-9v2h9v-2zM5.54 11L2 7.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 11zm0 8L2 15.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 19z", "edit_note": "M3 10h11v2H3v-2zm0-2h11V6H3v2zm0 8h7v-2H3v2zm15.01-3.13l.71-.71c.39-.39 1.02-.39 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71-2.12-2.12zm-.71.71l-5.3 5.3V21h2.12l5.3-5.3-2.12-2.12z", "flash": "M7 2v11h3v9l7-12h-4l4-8z", "undo": "M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z", "check_outline": "M16.59 7.58L10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z", "error": "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z", "add": "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"};
-  return { svg: function (n, cls) { return '<svg class="mi' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' + (P[n] || '') + '"/></svg>'; } };
+  const MS = {"refresh": "refresh", "logout": "logout", "description": "description", "history": "history", "expand": "expand_more", "reset": "restart_alt", "close": "close", "info": "info", "search": "search", "edit": "edit", "camera": "photo_camera", "delete": "delete", "check": "check", "check_circle": "check_circle", "warning": "warning", "save": "save", "volume_up": "volume_up", "volume_off": "volume_off", "qr": "qr_code_scanner", "checklist": "checklist", "edit_note": "edit_note", "flash": "bolt", "undo": "undo", "check_outline": "check_circle", "error": "error", "add": "add"};
+  return { svg: function (n, cls) { return '<span class="mi-w' + (cls ? ' ' + cls : '') + '"><svg class="mi' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="' + (P[n] || '') + '"/></svg><span class="ms" aria-hidden="true">' + (MS[n] || n) + '</span></span>'; } };
 })();
 
 /* Feedback — bunyi & getar saat scan (satu saklar untuk keduanya, diingat di perangkat) */
@@ -792,7 +799,7 @@ const Auth = (function () {
         '</div>' +
         '<p class="login-error" role="alert" aria-live="assertive"></p>' +
         '<div class="scan-opt">' +
-          '<label class="scan-check"><input type="checkbox" id="scanHas"><span id="scanLabel">SAYA TIDAK PUNYA BARCODE SCANNER</span></label>' +
+          '<label class="scan-check"><input type="checkbox" id="scanHas"><span id="scanLabel">Saya tidak punya barcode scanner</span></label>' +
           '<div class="scan-test" id="scanTest" hidden>' +
             '<p>Colok scanner lewat OTG, ketuk kotak di bawah, lalu scan satu barcode apa saja untuk menguji.</p>' +
             '<input type="text" id="scanProbe" inputmode="none" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Scan barcode di sini" aria-label="Kotak uji scanner">' +
@@ -842,7 +849,7 @@ const Auth = (function () {
     function reset() { times = []; probe.value = ''; progress(0, '', 'Menunggu scan…'); }
     function paint() {
       const on = chk.checked;
-      label.textContent = on ? '✅ SAYA MEMILIKI BARCODE SCANNER' : 'SAYA TIDAK PUNYA BARCODE SCANNER';
+      label.textContent = on ? '✅ Saya memiliki barcode scanner' : 'Saya tidak punya barcode scanner';
       box.hidden = !on;
       if (on) { reset(); setTimeout(function () { try { probe.focus(); } catch (e) {} }, 30); }
       else { try { input.focus(); } catch (e) {} }
@@ -989,9 +996,9 @@ const Auth = (function () {
     <div class="hdr-row">
       <div class="hdr-brand"><svg class="hdr-logo" viewBox="0 0 48 48" aria-hidden="true" focusable="false"><rect width="48" height="48" rx="12" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path transform="translate(0 18)" fill="#fff" d="M11 12v7c0 2.76 5.82 5 13 5s13-2.24 13-5v-7c0 2.76-5.82 5-13 5s-13-2.24-13-5z"/><path transform="translate(0 9)" fill="#fff" d="M11 12v7c0 2.76 5.82 5 13 5s13-2.24 13-5v-7c0 2.76-5.82 5-13 5s-13-2.24-13-5z"/><path fill="#fff" d="M11 12v7c0 2.76 5.82 5 13 5s13-2.24 13-5v-7c0 2.76-5.82 5-13 5s-13-2.24-13-5z"/><ellipse cx="24" cy="12" rx="13" ry="5" fill="#A7F3D0"/></g></svg><h1>MOBILE DATA CAPTURE</h1></div>
       <div class="hdr-actions">
-        <button type="button" data-theme-btn class="hicon" aria-label="Ganti tema" title="Tema"><span class="ic ic-moon"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.3 3a9 9 0 1 0 8.7 11.4 7 7 0 0 1-8.7-11.4z"/></svg></span><span class="ic ic-sun"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 1h0v3M12 20v3M1 12h3M20 12h3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button>
-        <button type="button" id="btnRefresh" class="hicon" aria-label="Muat ulang data" title="Refresh"><span class="ic"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></span></button>
-        <button type="button" id="btnLogout" class="hicon" aria-label="Keluar dari akun petugas" title="Keluar"><span class="ic"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg></span></button>
+        <button type="button" data-theme-btn class="hicon" aria-label="Ganti tema" title="Tema"><span class="ic ic-moon"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12.3 3a9 9 0 1 0 8.7 11.4 7 7 0 0 1-8.7-11.4z"/></svg><span class="ms" aria-hidden="true">dark_mode</span></span></span><span class="ic ic-sun"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM12 1h0v3M12 20v3M1 12h3M20 12h3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="ms" aria-hidden="true">light_mode</span></span></span></button>
+        <button type="button" id="btnRefresh" class="hicon" aria-label="Muat ulang data" title="Refresh"><span class="ic"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg><span class="ms" aria-hidden="true">refresh</span></span></span></button>
+        <button type="button" id="btnLogout" class="hicon" aria-label="Keluar dari akun petugas" title="Keluar"><span class="ic"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg><span class="ms" aria-hidden="true">logout</span></span></span></button>
       </div>
     </div>
     <div class="hdr-row hdr-stats">
@@ -1001,17 +1008,17 @@ const Auth = (function () {
     <div class="hdr-row hdr-nav">
       <div class="sheet-pick" id="sheetPick" hidden>
         <label class="sheet-sel" title="Simpan ke sheet">
-          <span class="ic"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg></span>
+          <span class="ic"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg><span class="ms" aria-hidden="true">description</span></span></span>
           <select id="sheetSelect" aria-label="Simpan ke sheet"></select>
         </label>
       </div>
-      <a id="btnHistory" class="hbtn" href="tabel.html" target="_blank" rel="noopener" aria-label="Buka riwayat data"><span class="ic"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg></span>RIWAYAT</a>
+      <a id="btnHistory" class="hbtn" href="tabel.html" target="_blank" rel="noopener" aria-label="Buka riwayat data"><span class="ic"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0 0 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg><span class="ms" aria-hidden="true">history</span></span></span>Riwayat</a>
     </div>
   </header>
   <nav class="mode-tabs" id="modeTabs" role="tablist" aria-label="Mode">
-    <button type="button" role="tab" id="tabInput" aria-selected="true"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10h11v2H3v-2zm0-2h11V6H3v2zm0 8h7v-2H3v2zm15.01-3.13l.71-.71c.39-.39 1.02-.39 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71-2.12-2.12zm-.71.71l-5.3 5.3V21h2.12l5.3-5.3-2.12-2.12z"/></svg> INPUT ASET</button>
-    <button type="button" role="tab" id="tabCek" aria-selected="false"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 7h-9v2h9V7zm0 8h-9v2h9v-2zM5.54 11L2 7.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 11zm0 8L2 15.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 19z"/></svg> CEK STOK</button>
-    <button type="button" role="tab" id="tabDash" aria-selected="false"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg> DASBOR</button>
+    <button type="button" role="tab" id="tabInput" aria-selected="true"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 10h11v2H3v-2zm0-2h11V6H3v2zm0 8h7v-2H3v2zm15.01-3.13l.71-.71c.39-.39 1.02-.39 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71-2.12-2.12zm-.71.71l-5.3 5.3V21h2.12l5.3-5.3-2.12-2.12z"/></svg><span class="ms" aria-hidden="true">edit_note</span></span><span class="nav-l">Input aset</span></button>
+    <button type="button" role="tab" id="tabCek" aria-selected="false"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 7h-9v2h9V7zm0 8h-9v2h9v-2zM5.54 11L2 7.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 11zm0 8L2 15.46l1.41-1.41 2.12 2.12 4.24-4.24 1.41 1.41L5.54 19z"/></svg><span class="ms" aria-hidden="true">checklist</span></span><span class="nav-l">Cek stok</span></button>
+    <button type="button" role="tab" id="tabDash" aria-selected="false"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg><span class="ms" aria-hidden="true">dashboard</span></span><span class="nav-l">Dasbor</span></button>
   </nav>
 
   <main class="content">
@@ -1021,7 +1028,7 @@ const Auth = (function () {
       <button type="button" class="group-header" id="toggleKonteks">
         <span class="group-title">Data Terpilih</span>
         <span class="group-pills" id="kontekstPills"></span>
-        <span class="chevron"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg></span>
+        <span class="chevron"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg><span class="ms" aria-hidden="true">expand_more</span></span></span>
       </button>
       <div class="group-body" id="kontekstBody">
         <div class="field field-md">
@@ -1050,7 +1057,7 @@ const Auth = (function () {
 
     <!-- DETAIL ASET (selalu terbuka) -->
     <section class="group">
-      <div class="group-header static split"><span class="group-title">Detail Aset</span><span class="hdr-tools"><button type="button" id="btnSoundInput" class="snd-btn"></button><button type="button" id="btnResetAll" class="reset-btn" aria-label="Reset semua field"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93 0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34A7.958 7.958 0 0 0 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z"/></svg>Reset</button></span></div>
+      <div class="group-header static split"><span class="group-title">Detail Aset</span><span class="hdr-tools"><button type="button" id="btnSoundInput" class="snd-btn"></button><button type="button" id="btnResetAll" class="reset-btn" aria-label="Reset semua field"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5V2L8 6l4 4V7c3.31 0 6 2.69 6 6 0 2.97-2.17 5.43-5 5.91v2.02c3.95-.49 7-3.85 7-7.93 0-4.42-3.58-8-8-8zm-6 8c0-1.65.67-3.15 1.76-4.24L6.34 7.34A7.958 7.958 0 0 0 4 13c0 4.08 3.05 7.44 7 7.93v-2.02c-2.83-.48-5-2.94-5-5.91z"/></svg><span class="ms" aria-hidden="true">restart_alt</span></span>Reset</button></span></div>
       <div class="group-body">
 
         <div class="subgroup-label">Identitas Aset</div>
@@ -1058,7 +1065,7 @@ const Auth = (function () {
           <label>Pemilik Aset</label>
           <div class="field-with-clear">
             <input id="fPemilik" type="text" autocomplete="off" enterkeyhint="next" data-next="fNamaAset">
-            <button type="button" class="clear-btn" data-target="fPemilik"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button type="button" class="clear-btn" data-target="fPemilik"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span class="ms" aria-hidden="true">close</span></span></button>
           </div>
         </div>
 
@@ -1066,19 +1073,19 @@ const Auth = (function () {
           <label>Nama Aset / Tipe Aset <span class="req">*</span></label>
           <div class="field-with-clear">
             <input id="fNamaAset" type="text" class="req-box" autocomplete="off" enterkeyhint="next" data-next="fSerial">
-            <button type="button" class="clear-btn" data-target="fNamaAset"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button type="button" class="clear-btn" data-target="fNamaAset"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span class="ms" aria-hidden="true">close</span></span></button>
           </div>
         </div>
 
         <div class="subgroup-label">Identitas Unik</div>
-        <p class="hint-text" id="hintScan"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg> Isi salah satu: Serial Number atau No. Inventaris — bisa diketik manual atau ditembak dengan barcode scanner USB/Bluetooth (otomatis masuk ke field yang sedang aktif)</p>
+        <p class="hint-text" id="hintScan"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg><span class="ms" aria-hidden="true">info</span></span> Isi salah satu: Serial Number atau No. Inventaris — bisa diketik manual atau ditembak dengan barcode scanner USB/Bluetooth (otomatis masuk ke field yang sedang aktif)</p>
 
         <div class="field field-lg accent-serial">
           <label>Serial Number</label>
           <div class="field-with-clear">
             <input id="fSerial" type="text" class="mono has-cam" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" data-next="fInventaris">
-            <button type="button" class="cam-btn" data-target="fSerial" aria-label="Scan dengan kamera" title="Scan dengan kamera"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z"/></svg></button>
-            <button type="button" class="clear-btn" data-target="fSerial"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button type="button" class="cam-btn" data-target="fSerial" aria-label="Scan dengan kamera" title="Scan dengan kamera"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z"/></svg><span class="ms" aria-hidden="true">qr_code_scanner</span></span></button>
+            <button type="button" class="clear-btn" data-target="fSerial"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span class="ms" aria-hidden="true">close</span></span></button>
           </div>
         </div>
 
@@ -1086,32 +1093,32 @@ const Auth = (function () {
           <label>No. Inventaris</label>
           <div class="field-with-clear">
             <input id="fInventaris" type="text" class="mono has-cam" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="next" data-next="fCatatan">
-            <button type="button" class="cam-btn" data-target="fInventaris" aria-label="Scan dengan kamera" title="Scan dengan kamera"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z"/></svg></button>
-            <button type="button" class="clear-btn" data-target="fInventaris"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button type="button" class="cam-btn" data-target="fInventaris" aria-label="Scan dengan kamera" title="Scan dengan kamera"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M19 5h-6v6h6V5zm-6 8h1.5v1.5H13V13zm1.5 1.5H16V16h-1.5v-1.5zM16 13h1.5v1.5H16V13zm-3 3h1.5v1.5H13V16zm1.5 1.5H16V19h-1.5v-1.5zM16 16h1.5v1.5H16V16zm1.5-1.5H19V16h-1.5v-1.5zm0 3H19V19h-1.5v-1.5zM22 7h-2V4h-3V2h5v5zm0 15v-5h-2v3h-3v2h5zM2 22h5v-2H4v-3H2v5zM2 2v5h2V4h3V2H2z"/></svg><span class="ms" aria-hidden="true">qr_code_scanner</span></span></button>
+            <button type="button" class="clear-btn" data-target="fInventaris"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span class="ms" aria-hidden="true">close</span></span></button>
           </div>
         </div>
 
         <div class="check-row">
-          <button type="button" id="btnCheckExisting" class="check-btn"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Cek apakah sudah pernah diinput</button>
+          <button type="button" id="btnCheckExisting" class="check-btn"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg><span class="ms" aria-hidden="true">search</span></span> Cek apakah sudah pernah diinput</button>
         </div>
         <div id="checkResult" class="check-result" hidden></div>
 
         <div class="subgroup-label">Dokumentasi <span class="opt-note">(opsional)</span></div>
         <div class="chip-row" id="chipsDoc">
-          <button type="button" class="chip-manual" data-doc="catatan" aria-expanded="false"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Catatan</button>
-          <button type="button" class="chip-manual" data-doc="foto" aria-expanded="false"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg> Foto</button>
+          <button type="button" class="chip-manual" data-doc="catatan" aria-expanded="false"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span class="ms" aria-hidden="true">edit</span></span> Catatan</button>
+          <button type="button" class="chip-manual" data-doc="foto" aria-expanded="false"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><span class="ms" aria-hidden="true">photo_camera</span></span> Foto</button>
         </div>
         <div class="field field-lg" id="fieldCatatan" hidden>
           <label>Catatan</label>
           <div class="field-with-clear">
             <textarea id="fCatatan" rows="2" placeholder="Kondisi detail, kerusakan, atau info tambahan..."></textarea>
-            <button type="button" class="clear-btn" data-target="fCatatan"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            <button type="button" class="clear-btn" data-target="fCatatan"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg><span class="ms" aria-hidden="true">close</span></span></button>
           </div>
         </div>
 
         <div class="field field-photo" id="fieldFoto" hidden>
           <label>Foto</label>
-          <label class="foto-btn" for="fFoto"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg> Pilih / Ambil Foto</label>
+          <label class="foto-btn" for="fFoto"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg><span class="ms" aria-hidden="true">photo_camera</span></span> Pilih / Ambil Foto</label>
           <input type="file" id="fFoto" accept="image/*" capture="environment" hidden>
           <span id="fotoStatus" class="foto-status"></span>
           <div class="foto-preview-wrap" id="fotoPreviewWrap" hidden>
@@ -1128,7 +1135,7 @@ const Auth = (function () {
       <button type="button" class="group-header" id="toggleRecent">
         <span class="group-title">Data Terakhir</span>
         <span class="group-pills"></span>
-        <span class="chevron"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg></span>
+        <span class="chevron"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg><span class="ms" aria-hidden="true">expand_more</span></span></span>
       </button>
       <div class="group-body" id="recentBody" hidden>
         <table class="recent-table">
@@ -1214,7 +1221,7 @@ const CamScan = (function () {
         '<div class="cam-msg" hidden></div><div class="cam-banner" hidden role="status" aria-live="polite"></div></div>' +
       '<div class="cam-bottom"><p class="cam-hint"></p><div class="row">' +
         '<label class="cam-photo" hidden>' + MI.svg('qr') + ' AMBIL FOTO BARCODE<input type="file" accept="image/*" capture="environment"></label>' +
-        '<button type="button" class="cam-done">SELESAI</button></div></div>';
+        '<button type="button" class="cam-done">Selesai</button></div></div>';
     document.body.appendChild(el);
     video = $('video'); banner = $('.cam-banner'); msg = $('.cam-msg'); hint = $('.cam-hint');
     titleEl = $('.cam-title'); photoLbl = $('.cam-photo'); torchBtn = $('.cam-torch');
@@ -1399,7 +1406,7 @@ const CamScan = (function () {
     Feedback.unlock();
     titleEl.textContent = opts.title || 'Scan barcode';
     hint.textContent = opts.hint || 'Arahkan kamera ke barcode';
-    $('.cam-done').textContent = opts.continuous ? 'SELESAI' : 'BATAL';
+    $('.cam-done').textContent = opts.continuous ? 'Selesai' : 'Batal';
     banner.hidden = true; showMsg(''); photoLbl.hidden = true; torchBtn.hidden = true; torchBtn.classList.remove('on');
     el.classList.remove('photo-mode');
     lastCode = ''; lastAt = 0; busy = false;
@@ -1587,7 +1594,7 @@ const CamScan = (function () {
   </div>
 
   <div class="cek-scope" id="cekScope">
-    <div class="cs-text"><span class="cs-lbl">CAKUPAN</span><span class="cs-val" id="cekScopeTxt">Semua aset</span></div>
+    <div class="cs-text"><span class="cs-lbl">Cakupan</span><span class="cs-val" id="cekScopeTxt">Semua aset</span></div>
     <button type="button" id="cekFilterClear" class="cs-clear" aria-label="Hapus filter cakupan" hidden></button>
     <button type="button" id="cekFilterBtn" class="cs-btn"></button>
   </div>
@@ -1603,8 +1610,8 @@ const CamScan = (function () {
   <div id="cekResult" class="cek-result" hidden role="status" aria-live="polite"></div>
 
   <div class="cek-tabs" role="tablist">
-    <button type="button" role="tab" data-list="belum" aria-selected="true">BELUM DICEK<span id="cekBelumN">0</span></button>
-    <button type="button" role="tab" data-list="sudah" aria-selected="false">SUDAH DICEK<span id="cekSudahN">0</span></button>
+    <button type="button" role="tab" data-list="belum" aria-selected="true">Belum dicek<span id="cekBelumN">0</span></button>
+    <button type="button" role="tab" data-list="sudah" aria-selected="false">Sudah dicek<span id="cekSudahN">0</span></button>
   </div>
   <ul class="cek-list" id="cekList"></ul>
   <p class="cek-more" id="cekMore" hidden></p>
@@ -1897,7 +1904,7 @@ const Cek = (function () {
     resultCtx = null;
   }
 
-  const btnEdit = (rec) => '<button type="button" class="cr-btn wide' + (tone(rec.kondisi) === 'good' || !rec.kondisi ? '' : ' primary') + '" data-ract="edit" data-id="' + esc(rec.id) + '">' + MI.svg('edit') + ' UBAH KONDISI / CATATAN</button>';
+  const btnEdit = (rec) => '<button type="button" class="cr-btn wide' + (tone(rec.kondisi) === 'good' || !rec.kondisi ? '' : ' primary') + '" data-ract="edit" data-id="' + esc(rec.id) + '">' + MI.svg('edit') + ' Ubah kondisi / catatan</button>';
   // Riwayat pemeriksaan sebelumnya (bila ada lebih dari satu)
   function histHtml(r) {
     if (!r.riwayat || r.riwayat.length < 2) return '';
@@ -1912,7 +1919,7 @@ const Cek = (function () {
   }
   const outNote = () => '<div class="cr-note">Aset ini tidak termasuk cakupan (' + esc(describeFilter(flt)) + '). Pemeriksaan tetap tercatat, tetapi tidak menambah progres cakupan.</div>';
 
-  const btnUndo = (id) => '<button type="button" class="cr-btn" data-ract="unmark" data-id="' + esc(id) + '">' + MI.svg('undo') + ' BATALKAN CENTANG</button>';
+  const btnUndo = (id) => '<button type="button" class="cr-btn" data-ract="unmark" data-id="' + esc(id) + '">' + MI.svg('undo') + ' Batalkan centang</button>';
 
   // Satu kode -> server -> tampilkan + bunyi. Mengembalikan Promise<{kind, title, sub}> untuk banner kamera.
   function scan(code) {
@@ -1928,7 +1935,7 @@ const Cek = (function () {
     }).catch(function (e) {
       busy = false; $('cekGo').disabled = false;
       Feedback.err();
-      showResult('err', 'error', 'GAGAL', '<div class="cr-line">' + esc(e.message) + '</div>');
+      showResult('err', 'error', 'Gagal', '<div class="cr-line">' + esc(e.message) + '</div>');
       return { kind: 'err', title: 'Gagal', sub: e.message };
     });
   }
@@ -1940,24 +1947,24 @@ const Cek = (function () {
       const ids = recLines(rec).ids;
       if (r.status === 'already') {
         Feedback.warn();
-        showScanCard('warn', 'warning', 'SUDAH DICEK HARI INI', rec,
+        showScanCard('warn', 'warning', 'Sudah dicek hari ini', rec,
           '<div class="cr-line">Dicek ' + esc(rec.cekWaktu) + (rec.cekOleh ? ' oleh ' + esc(rec.cekOleh) : '') + '. Tidak dicatat dua kali.</div>' + (inScope ? '' : outNote()));
         return { kind: 'warn', title: 'Sudah dicek hari ini: ' + (rec.namaAset || code), sub: rec.cekWaktu + (rec.cekOleh ? ' · ' + rec.cekOleh : '') };
       }
       if (!inScope) {
         Feedback.warn();
-        showScanCard('warn', 'warning', 'DICATAT — DI LUAR CAKUPAN', rec, outNote());
+        showScanCard('warn', 'warning', 'Dicatat — di luar cakupan', rec, outNote());
         applyChecked(rec, first, false);
         return { kind: 'warn', title: 'Di luar cakupan: ' + (rec.namaAset || code), sub: ids };
       }
       Feedback.ok();
-      showScanCard('ok', 'check_circle', first ? 'DITEMUKAN — DICENTANG' : 'DICEK ULANG — TERCATAT', rec, '');
+      showScanCard('ok', 'check_circle', first ? 'Ditemukan — dicentang' : 'Dicek ulang — tercatat', rec, '');
       applyChecked(rec, first, true);
       return { kind: 'ok', title: (first ? '✓ ' : '↻ ') + (rec.namaAset || code), sub: ids };
     }
     if (r.status === 'notfound') {
       Feedback.err();
-      showResult('err', 'error', 'TIDAK ADA DI DAFTAR',
+      showResult('err', 'error', 'Tidak ada di daftar',
         '<div class="cr-name mono">' + esc(code) + '</div><div class="cr-line">Kode ini tidak cocok dengan Serial atau No. Inventaris di sheet ' + esc(Sheets.label()) + '.</div>',
         '<button type="button" class="cr-btn primary" data-ract="newasset" data-code="' + esc(code) + '">' + MI.svg('add') + ' INPUT SEBAGAI ASET BARU</button>');
       return { kind: 'err', title: 'Tidak ada di daftar', sub: code };
@@ -1966,13 +1973,13 @@ const Cek = (function () {
       Feedback.warn();
       const opts = (r.records || []).map(function (x) {
         return '<div class="cr-opt"><div><b>' + esc(x.namaAset || x.kategori || '(tanpa nama)') + '</b><div class="cr-line mono">' + esc(recLines(x).ids) + '</div><div class="cr-line">' + esc(recLines(x).loc) + (x.dicek ? ' · sudah dicek ' + esc(x.cekWaktu) : '') + '</div></div>' +
-          '<button type="button" class="cr-btn' + (x.dicek ? '' : ' primary') + '" style="flex:none;min-width:96px" data-ract="mark" data-id="' + esc(x.id) + '">' + (x.dicek ? 'CEK ULANG' : 'CENTANG') + '</button>' + '</div>';
+          '<button type="button" class="cr-btn' + (x.dicek ? '' : ' primary') + '" style="flex:none;min-width:96px" data-ract="mark" data-id="' + esc(x.id) + '">' + (x.dicek ? 'Cek ulang' : 'Centang') + '</button>' + '</div>';
       }).join('');
-      showResult('warn', 'warning', 'KODE COCOK DENGAN ' + r.count + ' DATA', '<div class="cr-line">Pilih yang benar. Tidak ada yang dicentang otomatis.</div><div class="cr-multi">' + opts + '</div>');
+      showResult('warn', 'warning', 'Kode cocok dengan ' + r.count + ' DATA', '<div class="cr-line">Pilih yang benar. Tidak ada yang dicentang otomatis.</div><div class="cr-multi">' + opts + '</div>');
       return { kind: 'warn', title: 'Cocok dengan ' + r.count + ' data', sub: 'Buka layar untuk memilih' };
     }
     Feedback.err();
-    showResult('err', 'error', 'GAGAL', '<div class="cr-line">' + esc(r.message || 'Terjadi kesalahan.') + '</div>');
+    showResult('err', 'error', 'Gagal', '<div class="cr-line">' + esc(r.message || 'Terjadi kesalahan.') + '</div>');
     return { kind: 'err', title: 'Gagal', sub: r.message || '' };
   }
 
@@ -2149,9 +2156,9 @@ const Cek = (function () {
     if (tdash) tdash.addEventListener('click', function () { setMode('dash'); });
     Feedback.bindButton($('cekSound'));
     $('cekRefresh').innerHTML = MI.svg('refresh');
-    $('cekCam').innerHTML = MI.svg('qr') + ' SCAN DENGAN KAMERA';
+    $('cekCam').innerHTML = MI.svg('qr') + ' Scan dengan kamera';
     $('cekRefresh').addEventListener('click', load);
-    $('cekFilterBtn').innerHTML = '<svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg> FILTER';
+    $('cekFilterBtn').innerHTML = '<span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg><span class="ms" aria-hidden="true">filter_list</span></span> Filter';
     $('cekFilterClear').innerHTML = MI.svg('close');
     $('cekFilterBtn').addEventListener('click', openFilter);
     $('cekFilterClear').addEventListener('click', function () { applyFilter(emptyFilter()); });
@@ -2458,7 +2465,7 @@ const Dash = (function () {
       '<section class="ds-card"><div class="ds-h"><h2>Kondisi aset</h2></div>' + donut(d) + '</section>' +
       '<section class="ds-card"><div class="ds-h"><h2>Aktivitas 14 hari</h2></div>' + activity(d) + '</section>' +
       '<section class="ds-card"><div class="ds-h"><h2>Perlu perhatian</h2><span class="ds-sub">' + n(d.perhatianTotal) + ' aset</span></div>' + attention(d) +
-        '<a class="ds-link" href="' + esc(href) + '" target="_blank" rel="noopener">BUKA TABEL DATA</a></section>' +
+        '<a class="ds-link" href="' + esc(href) + '" target="_blank" rel="noopener">Buka tabel data</a></section>' +
       '<section class="ds-card"><div class="ds-h"><h2>Per kategori</h2></div>' + hbars(d.kategori) + '</section>' +
       '<section class="ds-card"><div class="ds-h"><h2>Per lantai</h2></div>' + hbars(d.lantai) + '</section>' +
       '<section class="ds-card"><div class="ds-h"><h2>Per divisi</h2></div>' + hbars(d.divisi) + '</section>' +
@@ -2527,14 +2534,14 @@ try { if (localStorage.getItem('mac_mode_v1') === 'dash') Cek.setMode('dash', tr
 
 
   <footer class="app-footer">
-    <button type="button" id="btnSave" class="save-btn" data-state="idle"><span class="save-ic" aria-hidden="true"><svg class="mi s-idle" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg><svg class="mi s-done" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span><span class="save-label" id="saveLabel" aria-live="polite">SIMPAN ASET</span></button>
+    <button type="button" id="btnSave" class="save-btn" data-state="idle"><span class="save-ic" aria-hidden="true"><span class="mi-w s-idle"><svg class="mi s-idle" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg><span class="ms" aria-hidden="true">save</span></span><span class="mi-w s-done"><svg class="mi s-done" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span class="ms" aria-hidden="true">check</span></span></span><span class="save-label" id="saveLabel" aria-live="polite">SIMPAN ASET</span></button>
   </footer>
 </div>
 
 <!-- Modal sukses -->
 <div id="successOverlay" class="overlay" hidden>
   <div class="modal">
-    <div class="modal-icon"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+    <div class="modal-icon"><span class="mi-w"><svg class="mi" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg><span class="ms" aria-hidden="true">check</span></span></div>
     <h2>Tersimpan</h2>
     <p>Data aset berhasil masuk ke spreadsheet</p>
     <div class="modal-details" id="modalDetails"></div>
@@ -3739,7 +3746,9 @@ try { if (localStorage.getItem('mac_mode_v1') === 'dash') Cek.setMode('dash', tr
     const footer = document.querySelector('.app-footer');
     function adjust() {
       const offset = window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop;
-      footer.style.bottom = Math.max(0, offset) + 'px';
+      const kb = offset > 80;
+      document.body.classList.toggle('kb-open', kb);
+      footer.style.bottom = kb ? offset + 'px' : '';
     }
     window.visualViewport.addEventListener('resize', adjust);
     window.visualViewport.addEventListener('scroll', adjust);
@@ -3756,5 +3765,12 @@ try { if (localStorage.getItem('mac_mode_v1') === 'dash') Cek.setMode('dash', tr
   function escapeAttr(str) { return escapeHtml(str); }
 </script>
 
+<!-- UI-LAYER:begin -->
+<script>/* Ikon Material Symbols: bila font termuat, ikon cadangan SVG disembunyikan */
+(function(){var d=document.documentElement;function ok(){d.classList.add('ms-ok');}
+try{if(document.fonts&&document.fonts.load){document.fonts.load('24px "Material Symbols Rounded"','add').then(function(f){if(f&&f.length)ok();}).catch(function(){});}}catch(e){}})();</script>
+<style id="ui-layer">/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */@layer properties;@layer theme{:root,:host{--spacing: .25rem;--font-weight-medium: 500;--font-weight-semibold: 600;--tracking-normal: 0em;--tracking-wide: .025em;--leading-tight: 1.25;--radius-xl: .75rem;--radius-2xl: 1rem}}@layer utilities;:root{--nav-h: 64px}html{-webkit-text-size-adjust:100%}body{font-family:var(--font);font-feature-settings:"tnum" 1;-webkit-font-smoothing:antialiased}::selection{background:var(--accent-bg)}.mi-w{display:inline-flex;flex:none;align-items:center;justify-content:center;line-height:1}.mi-w .ms{display:none}.ms{font-family:Material Symbols Rounded;font-weight:400;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;white-space:nowrap;direction:ltr;font-size:22px;-webkit-font-feature-settings:"liga";font-feature-settings:"liga";-webkit-font-smoothing:antialiased;user-select:none}.ms-ok .mi-w>svg{display:none!important}.ms-ok .mi-w>.ms{display:inline-block}.hbtn .ms,.sheet-sel .ms,.chip-manual .ms,.check-btn .ms,.foto-btn .ms{font-size:20px}.hint-text .ms,.reset-btn .ms{font-size:16px}.clear-btn .ms{font-size:20px}.cam-btn .ms{font-size:26px}.modal-icon .ms{font-size:30px}.save-btn .ms{font-size:22px}.app-header{padding-inline:calc(var(--spacing) * 4);padding-bottom:calc(var(--spacing) * 3);padding-top:calc(10px + env(safe-area-inset-top));border-bottom:0;box-shadow:0 1px 0 var(--border)}.app-header h1{font-size:15px;--tw-leading: var(--leading-tight);line-height:var(--leading-tight);--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal)}.hdr-brand{display:flex;min-width:0px;align-items:center;gap:calc(var(--spacing) * 2.5)}.hdr-logo{height:calc(var(--spacing) * 9);width:calc(var(--spacing) * 9);flex:none;border-radius:10px;color:var(--accent)}.hdr-row+.hdr-row{margin-top:8px}.hicon{height:calc(var(--spacing) * 10);width:calc(var(--spacing) * 10);border-radius:calc(infinity * 1px);border-style:var(--tw-border-style);border-width:0px;background-color:transparent;color:var(--muted)}.hicon:active{background:var(--accent-bg);color:var(--accent-text)}.hicon .ms{font-size:24px}.hdr-actions{gap:2px;margin-right:-6px}.hdr-stats{align-items:baseline}.stats{font-size:13px;color:var(--muted)}.stats b{font-size:15px;--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);color:var(--text)}.stats .sep{margin-inline:calc(var(--spacing) * 2);color:var(--border)}.hdr-user{font-size:13px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);color:var(--muted)}.hbtn{min-width:0px;gap:calc(var(--spacing) * 1.5);border-radius:var(--radius-xl);padding-inline:calc(var(--spacing) * 3.5);font-size:13px;--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal);min-height:42px;border:1px solid var(--border);background:var(--surface);color:var(--text)}.hbtn:active{background:var(--accent-bg)}.sheet-sel{border-radius:var(--radius-xl);min-height:42px;border:1px solid var(--border);background:var(--surface-2);padding-left:12px}.sheet-sel select{font-size:14px;--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal);text-transform:none}.sheet-sel .ic{color:var(--accent-text)}.mode-tabs{position:fixed;inset-inline:0px;bottom:0;display:flex;gap:0px;padding:0;z-index:60;height:calc(var(--nav-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:var(--surface);border-bottom:0;border-top:1px solid var(--border)}.mode-tabs button{flex:1;flex-direction:column;gap:calc(var(--spacing) * .5);border-radius:0;border-style:var(--tw-border-style);border-width:0px;background-color:transparent;padding-inline:var(--spacing);font-size:12px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal);min-height:var(--nav-h);color:var(--muted);position:relative}@media(max-width:420px){.mode-tabs{gap:0;padding:0 0 env(safe-area-inset-bottom)}.mode-tabs button{font-size:12px;gap:2px}.mode-tabs button .mi{display:inline-block}}.mode-tabs button .mi{width:24px;height:24px}.mode-tabs button .ms{font-size:26px;transition:font-variation-settings .15s}.mode-tabs button .mi-w{height:calc(var(--spacing) * 8);width:calc(var(--spacing) * 16);border-radius:calc(infinity * 1px);transition:background-color .18s}.mode-tabs button[aria-selected=true]{background:transparent;border:0;color:var(--accent-text);font-weight:700}.mode-tabs button[aria-selected=true] .mi-w{background:var(--accent-bg)}.mode-tabs button[aria-selected=true] .ms{font-variation-settings:"FILL" 1}body.kb-open .mode-tabs{display:none}.app-footer{bottom:calc(var(--nav-h) + env(safe-area-inset-bottom));z-index:55;padding:10px 16px;background:var(--surface);border-top:1px solid var(--border)}body.kb-open .app-footer{padding-bottom:10px}.save-btn{border-radius:var(--radius-2xl);font-size:16px;--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-wide);letter-spacing:var(--tracking-wide);padding:15px;box-shadow:0 1px 2px #0f6e5140}.save-btn:active:not(:disabled){transform:scale(.985)}.save-btn[data-state=saving]{background:#5b6b64}.save-btn[data-state=done]{background:#0b5a43}.content{padding-bottom:calc(var(--nav-h) + 110px + env(safe-area-inset-bottom))}.group{margin-top:calc(var(--spacing) * 3);border-radius:var(--radius-2xl);margin-left:14px;margin-right:14px;border:1px solid var(--border);box-shadow:none}.group-header{padding-inline:calc(var(--spacing) * 4);padding-block:calc(var(--spacing) * 3.5)}.group-title{font-size:13px;--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal);color:var(--text);text-transform:none;letter-spacing:0}.pill{border-radius:calc(infinity * 1px);font-size:12px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);background:var(--accent-bg);border-color:transparent;color:var(--accent-text)}.pill-muted{background:var(--bg);color:var(--muted)}.field label{margin-bottom:calc(var(--spacing) * 1.5);font-size:13px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);color:var(--muted)}.field input,.field textarea,.field select{border-radius:var(--radius-xl);font-size:16px;border:1px solid var(--border);background-color:var(--surface);transition:border-color .15s,box-shadow .15s}.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #0f6e5129;outline:0}.field .req-box,.field select.req-box{border-color:#e5a0a0;background-color:var(--bad-bg)}.field .req-box:focus{border-color:var(--danger);box-shadow:0 0 0 3px #dc262624}.subgroup-label{font-size:12px;--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal);text-transform:none;letter-spacing:0;color:var(--accent-text)}.hint-text{display:flex;align-items:flex-start;gap:calc(var(--spacing) * 1.5);font-size:12.5px;font-style:normal}.mono,.field input.mono{font-family:var(--mono);letter-spacing:0;font-weight:500}.chip,.chip-manual{border-radius:calc(infinity * 1px);font-size:14px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);padding:11px 16px;min-height:44px;border:1px solid var(--border)}.chip.active{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}.chip-manual{border:1px dashed var(--accent)}.check-btn,.foto-btn{border-radius:var(--radius-xl);font-size:14px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);border:1px dashed var(--accent);color:var(--accent-text);background:var(--accent-bg)}.check-btn{display:flex;align-items:center;justify-content:center;gap:8px}.reset-btn{font-size:13px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium)}.snd-btn,.reset-btn{border-radius:999px}.accent-serial input{border-color:var(--serial)}.accent-inventaris input{border-color:var(--inventaris)}.accent-serial label,.accent-inventaris label{font-weight:600}.cam-btn{color:var(--accent-text)}@media(prefers-reduced-motion:no-preference){.mode-tabs button .mi-w{transition:background-color .18s}}.cek-sheet,.fl-head,.ds-h h2,.ds-top .ds-sheet,.ds-kpi .k-l,.srt-label,.lbl-field>span,.sheet-chip,.hist-table th{text-transform:none!important;letter-spacing:0!important;font-weight:600!important}.hist-table th{font-size:12px;font-weight:600!important}.sheet-chip{font-size:13.5px}.cek-sheet,.ds-h h2,.ds-top .ds-sheet{font-size:14px;color:var(--text);font-weight:600!important}.cr-btn,.cek-btn,.cek-cam,.cek-go{border-radius:var(--radius-xl);--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal);text-transform:none}.cek-cam{border:1px dashed var(--accent);background:var(--accent-bg);color:var(--accent-text);display:flex;align-items:center;justify-content:center;gap:8px}.ds-card,.cek-card,.cek-scope,.cek-top{border-radius:var(--radius-2xl);box-shadow:none}.ds-kpi .k-v{font-weight:600}.ds-h{align-items:center}.hist-header{box-shadow:0 1px 0 var(--border)}.hh-row h1{font-size:17px;--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold);--tw-tracking: var(--tracking-normal);letter-spacing:var(--tracking-normal);text-transform:none}.icon-btn,.hh-menu,.tool-btn{border-radius:calc(infinity * 1px);border:1px solid var(--border);background:var(--surface);font-weight:600;letter-spacing:0;text-transform:none}.hh-menu{border-radius:calc(infinity * 1px);font-size:13.5px;padding:0 14px}.hist-toolbar input{border-radius:calc(infinity * 1px);padding-left:16px;background:var(--surface-2);border:1px solid var(--border)}.hist-toolbar input:focus{border-color:var(--accent);box-shadow:0 0 0 3px #0f6e5129;outline:0}.tool-btn{border-radius:calc(infinity * 1px)}.hist-table{font-size:13.5px}.hist-table td{padding:10px 12px}.hist-table th{padding:10px 12px;background:var(--surface-2)}.badge{--tw-font-weight: var(--font-weight-semibold);font-weight:var(--font-weight-semibold)}.hist-footer{font-size:12.5px}.modal{border-radius:20px}body.history-page{--nav-h: 0px}.toast{border-radius:var(--radius-xl);font-size:14px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);bottom:calc(var(--nav-h) + 96px + env(safe-area-inset-bottom))}button,.btn-primary,.btn-secondary{letter-spacing:0}:root[data-theme=dark] .field .req-box,:root[data-theme=dark] .field select.req-box{background-color:#f0605d17;border-color:#8a4040}@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .field .req-box,:root:not([data-theme=light]) .field select.req-box{background-color:#f0605d17;border-color:#8a4040}}.scan-check{font-size:14px;--tw-font-weight: var(--font-weight-medium);font-weight:var(--font-weight-medium);text-transform:none;letter-spacing:0}@property --tw-leading{syntax: "*"; inherits: false;}@property --tw-font-weight{syntax: "*"; inherits: false;}@property --tw-tracking{syntax: "*"; inherits: false;}@property --tw-border-style{syntax: "*"; inherits: false; initial-value: solid;}@layer properties{@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))){*,:before,:after,::backdrop{--tw-leading: initial;--tw-font-weight: initial;--tw-tracking: initial;--tw-border-style: solid}}}
+</style>
+<!-- UI-LAYER:end -->
 </body>
 </html>
