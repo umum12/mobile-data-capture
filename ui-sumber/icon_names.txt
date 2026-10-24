@@ -1,0 +1,1 @@
+add,bolt,check,check_circle,checklist,close,dark_mode,dashboard,delete,description,edit,edit_note,error,expand_more,filter_list,history,home,info,light_mode,logout,menu,photo_camera,qr_code_scanner,refresh,restart_alt,save,search,undo,volume_off,volume_up,warning
