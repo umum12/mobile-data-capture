@@ -1,0 +1,146 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* ===== Lapisan desain (dimuat paling akhir; hanya tampilan, tanpa mengubah logika) ===== */
+:root { --nav-h: 64px; }
+html { -webkit-text-size-adjust: 100%; }
+body { font-family: var(--font); font-feature-settings: "tnum" 1; -webkit-font-smoothing: antialiased; }
+::selection { background: var(--accent-bg); }
+
+/* Ikon: Material Symbols bila font termuat, SVG cadangan bila tidak */
+.mi-w { @apply inline-flex items-center justify-center flex-none; line-height: 1; }
+.mi-w .ms { display: none; }
+.ms {
+  font-family: "Material Symbols Rounded"; font-weight: 400; font-style: normal; line-height: 1;
+  letter-spacing: normal; text-transform: none; white-space: nowrap; direction: ltr; font-size: 22px;
+  -webkit-font-feature-settings: "liga"; font-feature-settings: "liga"; -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+.ms-ok .mi-w > svg { display: none !important; }
+.ms-ok .mi-w > .ms { display: inline-block; }
+.hbtn .ms, .sheet-sel .ms, .chip-manual .ms, .check-btn .ms, .foto-btn .ms { font-size: 20px; }
+.hint-text .ms, .reset-btn .ms { font-size: 16px; }
+.clear-btn .ms { font-size: 20px; }
+.cam-btn .ms { font-size: 26px; }
+.modal-icon .ms { font-size: 30px; }
+.save-btn .ms { font-size: 22px; }
+
+/* ===== App bar ringkas ===== */
+.app-header { @apply px-4 pb-3; padding-top: calc(10px + env(safe-area-inset-top)); border-bottom: 0; box-shadow: 0 1px 0 var(--border); }
+.app-header h1 { @apply text-[15px] font-semibold tracking-normal leading-tight; }
+.hdr-brand { @apply flex items-center gap-2.5 min-w-0; }
+.hdr-logo { @apply w-9 h-9 flex-none rounded-[10px]; color: var(--accent); }
+.hdr-row + .hdr-row { margin-top: 8px; }
+.hicon { @apply w-10 h-10 rounded-full border-0 bg-transparent; color: var(--muted); }
+.hicon:active { background: var(--accent-bg); color: var(--accent-text); }
+.hicon .ms { font-size: 24px; }
+.hdr-actions { gap: 2px; margin-right: -6px; }
+.hdr-stats { @apply items-baseline; }
+.stats { @apply text-[13px]; color: var(--muted); }
+.stats b { @apply text-[15px] font-semibold; color: var(--text); }
+.stats .sep { @apply mx-2; color: var(--border); }
+.hdr-user { @apply text-[13px] font-medium; color: var(--muted); }
+.hbtn { @apply min-w-0 gap-1.5 rounded-xl px-3.5 text-[13px] font-semibold tracking-normal; min-height: 42px; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+.hbtn:active { background: var(--accent-bg); }
+.sheet-sel { @apply rounded-xl; min-height: 42px; border: 1px solid var(--border); background: var(--surface-2); padding-left: 12px; }
+.sheet-sel select { @apply text-[14px] font-semibold tracking-normal; text-transform: none; }
+.sheet-sel .ic { color: var(--accent-text); }
+
+/* ===== Navigasi bawah ===== */
+.mode-tabs {
+  @apply fixed inset-x-0 bottom-0 flex gap-0 p-0;
+  z-index: 60; height: calc(var(--nav-h) + env(safe-area-inset-bottom)); padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface); border-bottom: 0; border-top: 1px solid var(--border);
+}
+.mode-tabs button {
+  @apply flex-1 flex-col gap-0.5 rounded-none border-0 bg-transparent px-1 text-[12px] font-medium tracking-normal;
+  min-height: var(--nav-h); color: var(--muted); position: relative;
+}
+@media (max-width: 420px) { .mode-tabs { gap: 0; padding: 0 0 env(safe-area-inset-bottom); } .mode-tabs button { font-size: 12px; gap: 2px; } .mode-tabs button .mi { display: inline-block; } }
+.mode-tabs button .mi { width: 24px; height: 24px; }
+.mode-tabs button .ms { font-size: 26px; transition: font-variation-settings .15s; }
+.mode-tabs button .mi-w { @apply h-8 w-16 rounded-full; transition: background-color .18s; }
+.mode-tabs button[aria-selected="true"] { background: transparent; border: 0; color: var(--accent-text); font-weight: 700; }
+.mode-tabs button[aria-selected="true"] .mi-w { background: var(--accent-bg); }
+.mode-tabs button[aria-selected="true"] .ms { font-variation-settings: "FILL" 1; }
+body.kb-open .mode-tabs { display: none; }
+
+/* ===== Dock tombol simpan di atas navigasi ===== */
+.app-footer { bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); z-index: 55; padding: 10px 16px; background: var(--surface); border-top: 1px solid var(--border); }
+body.kb-open .app-footer { padding-bottom: 10px; }
+.save-btn { @apply rounded-2xl text-[16px] font-semibold tracking-wide; padding: 15px; box-shadow: 0 1px 2px rgba(15, 110, 81, .25); }
+.save-btn:active:not(:disabled) { transform: scale(.985); }
+.save-btn[data-state="saving"] { background: #5B6B64; }
+.save-btn[data-state="done"] { background: #0B5A43; }
+.content { padding-bottom: calc(var(--nav-h) + 110px + env(safe-area-inset-bottom)); }
+
+/* ===== Kartu & form ===== */
+.group { @apply mt-3 rounded-2xl; margin-left: 14px; margin-right: 14px; border: 1px solid var(--border); box-shadow: none; }
+.group-header { @apply px-4 py-3.5; }
+.group-title { @apply text-[13px] font-semibold normal-case tracking-normal; color: var(--text); text-transform: none; letter-spacing: 0; }
+.pill { @apply text-[12px] font-medium rounded-full; background: var(--accent-bg); border-color: transparent; color: var(--accent-text); }
+.pill-muted { background: var(--bg); color: var(--muted); }
+.field label { @apply text-[13px] font-medium mb-1.5; color: var(--muted); }
+.field input, .field textarea, .field select { @apply rounded-xl text-[16px]; border: 1px solid var(--border); background-color: var(--surface); transition: border-color .15s, box-shadow .15s; }
+.field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15, 110, 81, .16); outline: 0; }
+.field .req-box, .field select.req-box { border-color: #E5A0A0; background-color: var(--bad-bg); }
+.field .req-box:focus { border-color: var(--danger); box-shadow: 0 0 0 3px rgba(220, 38, 38, .14); }
+.subgroup-label { @apply text-[12px] font-semibold normal-case tracking-normal; text-transform: none; letter-spacing: 0; color: var(--accent-text); }
+.hint-text { @apply not-italic text-[12.5px] flex items-start gap-1.5; font-style: normal; }
+.mono, .field input.mono { font-family: var(--mono); letter-spacing: 0; font-weight: 500; }
+.chip, .chip-manual { @apply rounded-full text-[14px] font-medium; padding: 11px 16px; min-height: 44px; border: 1px solid var(--border); }
+.chip.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+.chip-manual { border: 1px dashed var(--accent); }
+.check-btn, .foto-btn { @apply rounded-xl text-[14px] font-medium; border: 1px dashed var(--accent); color: var(--accent-text); background: var(--accent-bg); }
+.check-btn { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.reset-btn { @apply text-[13px] font-medium; }
+.snd-btn, .reset-btn { border-radius: 999px; }
+.accent-serial input { border-color: var(--serial); }
+.accent-inventaris input { border-color: var(--inventaris); }
+.accent-serial label, .accent-inventaris label { font-weight: 600; }
+.cam-btn { color: var(--accent-text); }
+
+@media (prefers-reduced-motion: no-preference) { .mode-tabs button .mi-w { transition: background-color .18s; } }
+
+/* ===== Huruf kalimat (bukan KAPITAL) di label kecil ===== */
+.cek-sheet, .fl-head, .ds-h h2, .ds-top .ds-sheet, .ds-kpi .k-l, .srt-label, .lbl-field > span, .sheet-chip, .hist-table th {
+  text-transform: none !important; letter-spacing: 0 !important; font-weight: 600 !important;
+}
+.hist-table th { @apply text-[12px]; font-weight: 600 !important; }
+.sheet-chip { @apply text-[13.5px]; }
+.cek-sheet, .ds-h h2, .ds-top .ds-sheet { @apply text-[14px]; color: var(--text); font-weight: 600 !important; }
+
+/* ===== Cek stok & Dasbor ===== */
+.cr-btn, .cek-btn, .cek-cam, .cek-go { @apply rounded-xl font-semibold tracking-normal; text-transform: none; }
+.cek-cam { border: 1px dashed var(--accent); background: var(--accent-bg); color: var(--accent-text); display: flex; align-items: center; justify-content: center; gap: 8px; }
+.ds-card, .cek-card, .cek-scope, .cek-top { @apply rounded-2xl; box-shadow: none; }
+.ds-kpi .k-v { font-weight: 600; }
+.ds-h { align-items: center; }
+
+/* ===== Tabel Data ===== */
+.hist-header { box-shadow: 0 1px 0 var(--border); }
+.hh-row h1 { @apply text-[17px] font-semibold tracking-normal; text-transform: none; }
+.icon-btn, .hh-menu, .tool-btn { @apply rounded-full; border: 1px solid var(--border); background: var(--surface); font-weight: 600; letter-spacing: 0; text-transform: none; }
+.hh-menu { @apply rounded-full text-[13.5px]; padding: 0 14px; }
+.hist-toolbar input { @apply rounded-full; padding-left: 16px; background: var(--surface-2); border: 1px solid var(--border); }
+.hist-toolbar input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(15, 110, 81, .16); outline: 0; }
+.tool-btn { @apply rounded-full; }
+.hist-table { @apply text-[13.5px]; }
+.hist-table td { padding: 10px 12px; }
+.hist-table th { padding: 10px 12px; background: var(--surface-2); }
+.badge { @apply font-semibold; }
+.hist-footer { @apply text-[12.5px]; }
+
+/* ===== Modal, sheet, toast (bersama) ===== */
+.modal { border-radius: 20px; }
+body.history-page { --nav-h: 0px; }
+.toast { @apply rounded-xl text-[14px] font-medium; bottom: calc(var(--nav-h) + 96px + env(safe-area-inset-bottom)); }
+button, .btn-primary, .btn-secondary { letter-spacing: 0; }
+:root[data-theme="dark"] .field .req-box, :root[data-theme="dark"] .field select.req-box { background-color: rgba(240, 96, 93, .09); border-color: #8A4040; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .field .req-box, :root:not([data-theme="light"]) .field select.req-box { background-color: rgba(240, 96, 93, .09); border-color: #8A4040; } }
+.scan-check { @apply text-[14px] font-medium; text-transform: none; letter-spacing: 0; }
