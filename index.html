@@ -13,7 +13,7 @@
 <!-- UI-FONTS:begin -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,bolt,check,check_circle,checklist,close,dark_mode,dashboard,delete,description,edit,edit_note,error,expand_more,filter_list,history,home,info,light_mode,logout,menu,photo_camera,qr_code_scanner,refresh,restart_alt,save,search,undo,volume_off,volume_up,warning&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;600&family=Roboto:wght@400;500;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=add,bolt,check,check_circle,checklist,close,dark_mode,dashboard,delete,description,edit,edit_note,error,expand_more,filter_list,history,home,info,light_mode,logout,menu,photo_camera,qr_code_scanner,refresh,restart_alt,save,search,undo,volume_off,volume_up,warning&display=swap">
 <!-- UI-FONTS:end -->
 <script>
 /* Tema: diterapkan sebelum halaman digambar supaya tidak berkedip. Pilihan: auto | light | dark */
@@ -42,8 +42,8 @@
     --warning:#B45309;
     --radius:16px;
     --radius-sm:12px;
-    --font:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --mono:"IBM Plex Mono",ui-monospace,"SF Mono","Roboto Mono","Courier New",monospace;
+    --font:Roboto,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:"Roboto Mono",ui-monospace,"SF Mono","Courier New",monospace;
     --accent-text:#0F6E51;
     --accent-bg:#E2F1EA;
     --ok-bg:#EAF7EE; --ok-fg:#16803D; --ok-bd:#BFE5C8;
@@ -1184,6 +1184,8 @@ const Auth = (function () {
   .cam-overlay.photo-mode .cam-done{flex:none;min-width:96px;background:rgba(255,255,255,.14);}
   .cam-overlay.photo-mode .cam-reticle{display:none;}
   .cam-msg{top:22%;}
+  .cam-zoom{min-width:44px;height:40px;padding:0 10px;border:0;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;font-size:14px;font-weight:700;}
+  .cam-zoom[hidden]{display:none;}
 </style>
 <script>
 /* CamScan — pembaca barcode/QR lewat kamera HP.
@@ -1198,7 +1200,7 @@ const Auth = (function () {
 const CamScan = (function () {
   const ZXING_URL = 'https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js';
   const FORMATS = ['code_128', 'code_39', 'code_93', 'codabar', 'ean_13', 'ean_8', 'itf', 'upc_a', 'upc_e', 'qr_code', 'data_matrix'];
-  let el = null, video = null, banner = null, msg = null, hint = null, titleEl = null, photoLbl = null, torchBtn = null;
+  let el = null, video = null, banner = null, msg = null, hint = null, titleEl = null, photoLbl = null, torchBtn = null, zoomBtn = null, zoomLevels = [], zoomIdx = 0, scanTick = 0, rotCv = null;
   let stream = null, track = null, timer = null, detectFn = null, opts = null, running = false, busy = false;
   let lastCode = '', lastAt = 0, bannerTimer = null, openSeq = 0;
 
@@ -1214,6 +1216,7 @@ const CamScan = (function () {
     el.setAttribute('aria-label', 'Scan dengan kamera');
     el.innerHTML =
       '<div class="cam-top"><div class="cam-title"></div>' +
+        '<button type="button" class="cam-zoom" aria-label="Perbesar (zoom)" hidden>1×</button>' +
         '<button type="button" class="cam-torch" aria-label="Lampu kilat" hidden>' + MI.svg('flash') + '</button>' +
         '<button type="button" class="cam-snd snd-btn"></button>' +
         '<button type="button" class="cam-x" aria-label="Tutup kamera">' + MI.svg('close') + '</button></div>' +
@@ -1224,11 +1227,12 @@ const CamScan = (function () {
         '<button type="button" class="cam-done">Selesai</button></div></div>';
     document.body.appendChild(el);
     video = $('video'); banner = $('.cam-banner'); msg = $('.cam-msg'); hint = $('.cam-hint');
-    titleEl = $('.cam-title'); photoLbl = $('.cam-photo'); torchBtn = $('.cam-torch');
+    titleEl = $('.cam-title'); photoLbl = $('.cam-photo'); torchBtn = $('.cam-torch'); zoomBtn = $('.cam-zoom');
     Feedback.bindButton($('.cam-snd'));
     $('.cam-x').addEventListener('click', close);
     $('.cam-done').addEventListener('click', close);
     torchBtn.addEventListener('click', toggleTorch);
+    zoomBtn.addEventListener('click', cycleZoom);
     $('.cam-photo input').addEventListener('change', function (e) {
       const f = e.target.files && e.target.files[0];
       e.target.value = '';
@@ -1276,7 +1280,7 @@ const CamScan = (function () {
     detectFn = async function (src) {
       const w0 = src.videoWidth || src.naturalWidth || src.width, h0 = src.videoHeight || src.naturalHeight || src.height;
       if (!w0 || !h0) return '';
-      const sc = Math.min(1, 900 / w0);
+      const sc = Math.min(1, 1280 / w0);
       cv.width = Math.round(w0 * sc); cv.height = Math.round(h0 * sc);
       cx.drawImage(src, 0, 0, cv.width, cv.height);
       try {
@@ -1322,11 +1326,57 @@ const CamScan = (function () {
     if (!running || seq !== openSeq) return;
     if (!busy && video.readyState >= 2) {
       try {
-        const code = await detectFn(video);
+        scanTick++;
+        const code = await detectAny(video, scanTick % 2 === 0);
         if (running && seq === openSeq && code && !(code === lastCode && Date.now() - lastAt < 2500)) handle(code);
       } catch (e) {}
     }
     if (running && seq === openSeq) timer = setTimeout(function () { loop(seq); }, 140);
+  }
+
+  // Fokus kontinu + zoom (bila didukung kamera/browser). Barcode kecil/rapat jauh lebih mudah terbaca saat tajam dan diperbesar.
+  function setupCamera(cap) {
+    if (!cap || !track) return;
+    try {
+      if (cap.focusMode && cap.focusMode.indexOf('continuous') >= 0) track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(function () {});
+    } catch (e) {}
+    try {
+      if (cap.zoom && cap.zoom.max > cap.zoom.min) {
+        const mn = cap.zoom.min, mx = cap.zoom.max;
+        zoomLevels = [mn];
+        [2, 3].forEach(function (z) { if (z <= mx + 0.01 && z > mn) zoomLevels.push(z); });
+        if (zoomLevels.length > 1) { zoomBtn.hidden = false; zoomBtn.textContent = Math.round(zoomLevels[0] / mn) + '×'; }
+      }
+    } catch (e) {}
+  }
+
+  async function cycleZoom() {
+    if (!track || zoomLevels.length < 2) return;
+    zoomIdx = (zoomIdx + 1) % zoomLevels.length;
+    try {
+      await track.applyConstraints({ advanced: [{ zoom: zoomLevels[zoomIdx] }] });
+      zoomBtn.textContent = (zoomLevels[zoomIdx] / zoomLevels[0]).toFixed(0) + '×';
+    } catch (e) {}
+  }
+
+  // Salinan gambar diputar 90° — supaya barcode vertikal (mis. Service Tag Dell di tepi casing) ikut terbaca.
+  function rotated(src) {
+    const w0 = src.videoWidth || src.naturalWidth || src.width, h0 = src.videoHeight || src.naturalHeight || src.height;
+    if (!w0 || !h0) return null;
+    const sc = Math.min(1, 1600 / Math.max(w0, h0));
+    const w = Math.round(w0 * sc), h = Math.round(h0 * sc);
+    if (!rotCv) rotCv = document.createElement('canvas');
+    rotCv.width = h; rotCv.height = w;
+    const c = rotCv.getContext('2d');
+    c.translate(h, 0); c.rotate(Math.PI / 2);
+    c.drawImage(src, 0, 0, w, h);
+    return rotCv;
+  }
+
+  async function detectAny(src, tryRot) {
+    let code = await detectFn(src);
+    if (!code && tryRot) { const cv = rotated(src); if (cv) code = await detectFn(cv); }
+    return code;
   }
 
   async function toggleTorch() {
@@ -1369,7 +1419,7 @@ const CamScan = (function () {
   function enterPhotoMode(text) {
     el.classList.add('photo-mode');
     photoLbl.hidden = false;
-    torchBtn.hidden = true;
+    torchBtn.hidden = true; zoomBtn.hidden = true;
     hint.textContent = opts && opts.continuous ? 'Foto barcode satu per satu. Hasil langsung diproses.' : 'Foto barcode, hasilnya terbaca otomatis.';
     showMsg(text);
   }
@@ -1382,12 +1432,14 @@ const CamScan = (function () {
       if (window.createImageBitmap) {
         const bmp = await createImageBitmap(file);
         code = await det(bmp);
+        if (!code) { const cv = rotated(bmp); if (cv) code = await det(cv); }
         if (bmp.close) bmp.close();
       } else {
         const img = new Image();
         const url = URL.createObjectURL(file);
         await new Promise(function (res, rej) { img.onload = res; img.onerror = rej; img.src = url; });
         code = await det(img);
+        if (!code) { const cv = rotated(img); if (cv) code = await det(cv); }
         URL.revokeObjectURL(url);
       }
       if (code) { handle(code); }
@@ -1407,7 +1459,7 @@ const CamScan = (function () {
     titleEl.textContent = opts.title || 'Scan barcode';
     hint.textContent = opts.hint || 'Arahkan kamera ke barcode';
     $('.cam-done').textContent = opts.continuous ? 'Selesai' : 'Batal';
-    banner.hidden = true; showMsg(''); photoLbl.hidden = true; torchBtn.hidden = true; torchBtn.classList.remove('on');
+    banner.hidden = true; showMsg(''); photoLbl.hidden = true; torchBtn.hidden = true; torchBtn.classList.remove('on'); zoomBtn.hidden = true; zoomBtn.textContent = '1×'; zoomLevels = []; zoomIdx = 0; scanTick = 0;
     el.classList.remove('photo-mode');
     lastCode = ''; lastAt = 0; busy = false;
     el.hidden = false;
@@ -1424,12 +1476,12 @@ const CamScan = (function () {
     try {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('NoCamera');
       showMsg('Membuka kamera…');
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 } }, audio: false });
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
       if (seq !== openSeq) { stopStream(); return; }
       track = stream.getVideoTracks()[0] || null;
       video.srcObject = stream;
       try { await video.play(); } catch (e) {}
-      try { const cap = track && track.getCapabilities ? track.getCapabilities() : null; if (cap && cap.torch) torchBtn.hidden = false; } catch (e) {}
+      try { const cap = track && track.getCapabilities ? track.getCapabilities() : null; if (cap && cap.torch) torchBtn.hidden = false; setupCamera(cap); } catch (e) {}
       showMsg('Menyiapkan pembaca…');
       await makeDetector();
       if (seq !== openSeq) return;
