@@ -18,7 +18,7 @@ const names = fs.readFileSync(path.join(here, 'icon_names.txt'), 'utf8').trim();
 const head = `<!-- UI-FONTS:begin -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=${names}&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;600&family=Roboto:wght@400;500;700&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=${names}&display=swap">
 <!-- UI-FONTS:end -->`;
 const detect = `<script>/* Ikon Material Symbols: bila font termuat, ikon cadangan SVG disembunyikan */
 (function(){var d=document.documentElement;function ok(){d.classList.add('ms-ok');}
